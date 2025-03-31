@@ -20,14 +20,14 @@ export default function Gradient() {
         </div>
 
         {/* Right: Second Spline Model */}
-        <div className="w-[550px] h-[550px] ml-30 mt-10 md:w-[650px] md:h-[650px] lg:w-[550px] lg:h-[550px]">
+        {/* <div className="w-[550px] h-[550px] ml-30 mt-10 md:w-[650px] md:h-[650px] lg:w-[550px] lg:h-[550px]">
       
         <Spline
         scene="https://prod.spline.design/pq3ogkFieEA2QGd2/scene.splinecode" 
       />
 
  
-        </div>
+        </div> */}
       </div>
     </div>
   );
