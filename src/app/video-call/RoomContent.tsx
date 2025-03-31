@@ -62,7 +62,7 @@ const RoomContent: React.FC = () => {
             sharedLinks: [
               {
                 name: "Copy Link",
-                url: `https://mentorher.vercel.app/video-call?roomId=${roomId}`,
+                url: `https://mentorher-frontend.vercel.app/video-call?roomId=${roomId}`,
                 scenario: {
                   mode: ZegoUIKitPrebuilt.OneONoneCall,
                 },

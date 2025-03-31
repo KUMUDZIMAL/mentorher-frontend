@@ -23,7 +23,7 @@ const RoomPage = () => {
         sharedLinks: [
           {
             name: "Copy Link",
-            url: `https://mentorher.vercel.app/video-call/${RoomId}`,
+            url: `https://mentorher-frontend.vercel.app/video-call/${RoomId}`,
             scenario: {
               mode: ZegoUIKitPrebuilt.OneONoneCall,
             },
