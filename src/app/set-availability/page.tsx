@@ -67,6 +67,7 @@ export default function SetAvailability() {
         headers: { "Content-Type": "application/json" },
         // In a real app, userId is retrieved from the token on the backend.
         body: JSON.stringify({ availability }),
+        credentials: "include",
       });
       const data = await res.json();
       if (res.ok) {

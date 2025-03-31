@@ -18,7 +18,7 @@ const ProfileAbout = ({ isOwnProfile = false, onEdit }: ProfileAboutProps) => {
   useEffect(() => {
     const fetchMentorData = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/mentordata");
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/mentordata",{  credentials: "include",});
         if (!res.ok) {
           throw new Error("Failed to fetch mentor data");
         }

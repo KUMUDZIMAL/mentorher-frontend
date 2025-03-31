@@ -24,7 +24,7 @@ export default function GroupChatPage() {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const res = await fetch('https://mentorher-backend.vercel.app/api/groups');
+        const res = await fetch('https://mentorher-backend.vercel.app/api/groups',{  credentials: "include",});
         if (!res.ok) {
           console.error('Failed to fetch groups');
           return;
@@ -48,7 +48,8 @@ export default function GroupChatPage() {
         body: JSON.stringify({
           name: newGroupName,
           participantUsernames: selectedUsernames,
-        })
+        }),
+        credentials: "include",
       });
 
       if (res.ok) {

@@ -110,6 +110,7 @@ export default function ChatbotPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ message: input }),
+        credentials: "include",
       });
 
       const reader = response.body?.getReader();

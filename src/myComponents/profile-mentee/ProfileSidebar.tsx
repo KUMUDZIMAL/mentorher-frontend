@@ -24,7 +24,7 @@ const ProfileSidebar: React.FC = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata");
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata",{  credentials: "include",});
         const result = await res.json();
         if (!res.ok) {
           setError(result.error || "Failed to load profile data");

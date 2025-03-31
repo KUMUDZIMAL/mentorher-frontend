@@ -27,7 +27,7 @@ const BecomeMentor: React.FC = () => {
   useEffect(() => {
     async function fetchMenteeData() {
       try {
-        const res = await fetch('https://mentorher-backend.vercel.app/api/auth/mentordata');
+        const res = await fetch('https://mentorher-backend.vercel.app/api/auth/mentordata', {  credentials: "include",});
         if (res.status === 401) {
           router.push('/auth/login');
           return;

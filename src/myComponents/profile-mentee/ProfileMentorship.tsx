@@ -20,7 +20,7 @@ const ProfileMentorship: React.FC = () => {
   useEffect(() => {
     const fetchMenteeData = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata");
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata",{  credentials: "include",});
         if (!res.ok) {
           throw new Error("Failed to load profile data");
         }

@@ -17,7 +17,7 @@ const RoomPage: React.FC = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("https://mentorher-backend.vercel.app/api/auth/user");
+        const response = await fetch("https://mentorher-backend.vercel.app/api/auth/user",{  credentials: "include",});
         const data = await response.json();
         console.log("User data fetched:", data);
         setUserId(data._id);

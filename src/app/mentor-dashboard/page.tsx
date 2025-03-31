@@ -139,7 +139,7 @@ const MentorDashboard = () => {
   useEffect(() => {
     async function fetchMentorData() {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/mentordata");
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/mentordata" ,{  credentials: "include",});
         const json = await res.json();
         if (json.success && json.data) {
           setMentorData(json.data);

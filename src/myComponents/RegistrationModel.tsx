@@ -43,6 +43,7 @@ function RegistrationModal({ event, onClose, onRegister }: RegistrationModalProp
             eventId: event.id,
             ...formData,
           }),
+          credentials: "include",
         });
         const data = await response.json();
 

@@ -43,7 +43,7 @@ export default function Navbar() {
   // Handle logout.
   const handleLogout = async () => {
     try {
-      const res = await fetch("https://mentorher-backend.vercel.app/api/auth/logout", { method: "POST" });
+      const res = await fetch("https://mentorher-backend.vercel.app/api/auth/logout", { method: "POST" ,  credentials: "include",});
       if (res.ok) {
         setUser(null);
       }

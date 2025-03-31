@@ -32,7 +32,7 @@ const RecommendationsPage = () => {
   useEffect(() => {
     async function fetchMenteeData() {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata");
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata", {  credentials: "include",});
         if (res.status === 401) {
           router.push("/auth/login");
           return;

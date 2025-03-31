@@ -33,7 +33,7 @@ const ProfileHeader = ({ mentor, isOwnProfile = false }: ProfileHeaderProps) => 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user");
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user",{  credentials: "include",});
         if (!res.ok) {
           throw new Error("Failed to fetch user data");
         }
