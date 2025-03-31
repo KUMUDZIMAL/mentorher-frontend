@@ -32,7 +32,7 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
           return;
         }
 
-        const res = await fetch(url);
+        const res = await fetch(url,{  credentials: "include",});
         const data = await res.json();
 
         if (data.messages && Array.isArray(data.messages)) {
@@ -78,6 +78,8 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
+         credentials: "include",
+
       });
 
       const data = await res.json();
