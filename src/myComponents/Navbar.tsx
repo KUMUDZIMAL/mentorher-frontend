@@ -20,7 +20,7 @@ export default function Navbar() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user", { cache: "no-store" });
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user", { cache: "no-store"  ,credentials: "include", });
         const data = await res.json();
         console.log("Fetched auth data:", data);
 
