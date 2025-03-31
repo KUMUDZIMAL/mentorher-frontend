@@ -17,7 +17,7 @@ const RoomPage: React.FC = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("/api/auth/user");
+        const response = await fetch("https://mentorher-backend.vercel.app/api/auth/user");
         const data = await response.json();
         console.log("User data fetched:", data);
         setUserId(data._id);
@@ -86,7 +86,7 @@ const RoomPage: React.FC = () => {
           sharedLinks: [
             {
               name: "Copy Link",
-              url: `https://localhost:3000/video-call/${roomId}`,
+              url: `https://mentorher-frontend.vercel.app/video-call/${roomId}`,
               scenario: {
                 mode: ZegoUIKitPrebuilt.OneONoneCall,
               },

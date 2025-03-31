@@ -20,7 +20,7 @@ const ProfileSidebar = () => {
   useEffect(() => {
     const fetchMentorData = async () => {
       try {
-        const res = await fetch("/api/auth/mentordata");
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/mentordata");
         if (!res.ok) {
           throw new Error("Failed to fetch mentor data");
         }

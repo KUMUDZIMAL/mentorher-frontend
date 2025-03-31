@@ -24,7 +24,7 @@ export default function GroupChatPage() {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const res = await fetch('/api/groups');
+        const res = await fetch('https://mentorher-backend.vercel.app/api/groups');
         if (!res.ok) {
           console.error('Failed to fetch groups');
           return;
@@ -42,7 +42,7 @@ export default function GroupChatPage() {
     if (!newGroupName.trim() || selectedUsernames.length === 0) return;
     
     try {
-      const res = await fetch('/api/groups', {
+      const res = await fetch('https://mentorher-backend.vercel.app/api/groups', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -69,7 +69,7 @@ export default function GroupChatPage() {
     if (!currentGroupId || !newParticipantUsername.trim()) return;
   
     try {
-      const res = await fetch('/api/groups', {
+      const res = await fetch('https://mentorher-backend.vercel.app/api/groups', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

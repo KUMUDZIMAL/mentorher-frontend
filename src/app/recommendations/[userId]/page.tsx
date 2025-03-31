@@ -32,7 +32,7 @@ const RecommendationsPage = () => {
   useEffect(() => {
     async function fetchMenteeData() {
       try {
-        const res = await fetch("/api/auth/menteedata");
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata");
         if (res.status === 401) {
           router.push("/auth/login");
           return;
@@ -59,7 +59,7 @@ const RecommendationsPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`/api/recommendations/${userId}`);
+        const res = await fetch(`https://mentorher-backend.vercel.app/api/recommendations/${userId}`);
         if (!res.ok) {
           throw new Error("Failed to fetch recommendations");
         }

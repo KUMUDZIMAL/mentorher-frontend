@@ -62,7 +62,7 @@ export default function SetAvailability() {
     }
     setLoading(true);
     try {
-      const res = await fetch("/api/availability", {
+      const res = await fetch("https://mentorher-backend.vercel.app/api/availability", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         // In a real app, userId is retrieved from the token on the backend.

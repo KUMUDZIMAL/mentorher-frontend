@@ -23,7 +23,7 @@ const MenteeDashboard = () => {
   useEffect(() => {
     async function fetchMenteeData() {
       try {
-        const res = await fetch('/api/auth/menteedata');
+        const res = await fetch('https://mentorher-backend.vercel.app/api/auth/menteedata');
         const json = await res.json();
         if (json.success && json.data) {
           setMenteeData(json.data);

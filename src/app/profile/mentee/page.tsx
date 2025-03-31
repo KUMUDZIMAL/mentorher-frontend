@@ -53,7 +53,7 @@ const MenteeProfile = () => {
   useEffect(() => {
     const fetchMenteeData = async () => {
       try {
-        const response = await fetch("/api/auth/menteedata");
+        const response = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata");
         if (!response.ok) {
           throw new Error("Failed to fetch mentee data");
         }

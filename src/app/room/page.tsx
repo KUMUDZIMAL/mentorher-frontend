@@ -13,7 +13,7 @@ const Page = () => {
   useEffect(() => {
     async function checkAuth() {
       try {
-        const res = await fetch("/api/auth/user", { cache: "no-store" });
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user", { cache: "no-store" });
         const data = await res.json();
         // Adjust based on your API response structure
         if (data && data._id) {

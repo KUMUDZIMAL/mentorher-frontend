@@ -34,7 +34,7 @@ function RegistrationModal({ event, onClose, onRegister }: RegistrationModalProp
     // Basic validation for all fields
     if (formData.fullName && formData.email && formData.phone && formData.isMentor) {
       try {
-        const response = await fetch("/api/registerEvent", {
+        const response = await fetch("https://mentorher-backend.vercel.app/api/registerEvent", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({

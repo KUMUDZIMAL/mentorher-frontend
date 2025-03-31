@@ -23,7 +23,7 @@ const RoomPage = () => {
         sharedLinks: [
           {
             name: "Copy Link",
-            url: `https://localhost:3000/room/${RoomId}`,
+            url: `https://mentorher-frontend.vercel.app/room/${RoomId}`,
             scenario: {
               mode: ZegoUIKitPrebuilt.OneONoneCall,
             },

@@ -24,9 +24,9 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
       try {
         let url = "";
         if (groupId) {
-          url = `/api/messages?groupId=${groupId}`;
+          url = `https://mentorher-backend.vercel.app/api/messages?groupId=${groupId}`;
         } else if (receiverId) {
-          url = `/api/messages?receiverId=${receiverId}`;
+          url = `https://mentorher-backend.vercel.app/api/messages?receiverId=${receiverId}`;
         } else {
           setError("No receiverId or groupId provided");
           return;
@@ -74,7 +74,7 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
         return;
       }
 
-      const res = await fetch("/api/messages", {
+      const res = await fetch("https://mentorher-backend.vercel.app/api/messages", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

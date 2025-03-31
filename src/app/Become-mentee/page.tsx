@@ -17,7 +17,7 @@ const BecomeMentor: React.FC = () => {
   const handleSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      const res = await fetch("/api/mentee", {
+      const res = await fetch("https://mentorher-backend.vercel.app/api/mentee", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -43,7 +43,7 @@ const BecomeMentor: React.FC = () => {
   useEffect(() => {
     async function fetchMenteeData() {
       try {
-        const res = await fetch('/api/auth/menteedata');
+        const res = await fetch('https://mentorher-backend.vercel.app/api/auth/menteedata');
         if (res.status === 401) {
           router.push('/auth/login');
           return;

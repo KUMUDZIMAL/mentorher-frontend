@@ -30,7 +30,7 @@ const ProfileExperience: React.FC = () => {
   useEffect(() => {
     const fetchMenteeData = async () => {
       try {
-        const res = await fetch("/api/auth/menteedata");
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata");
         const result = await res.json();
 
         if (!res.ok) {
