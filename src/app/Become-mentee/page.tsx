@@ -31,9 +31,9 @@ const BecomeMentor: React.FC = () => {
         return;
       }
       toast.success("Application submitted", {
-        description: "Thank you for applying to be a mentor!",
+        description: "Thank you for applying to be a mentee!",
       });
-      router.push("/");
+      router.push("/mentee-dashboard");
     } catch (error: any) {
       toast.error(error.message);
     } finally {
