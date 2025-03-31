@@ -24,7 +24,7 @@ export default function GroupChatPage() {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const res = await fetch('https://mentorher-backend.vercel.app/api/groups',{  credentials: "include",});
+        const res = await fetch('https://mentorher-backend.vercel.app/api/groups', { credentials: "include" });
         if (!res.ok) {
           console.error('Failed to fetch groups');
           return;
@@ -194,7 +194,8 @@ export default function GroupChatPage() {
                       : ''}
                   </p>
                 </div>
-                <Link href={`/group-chat/${group._id}`}>
+                {/* Updated Link to use query parameter instead of a dynamic segment */}
+                <Link href={`/group-chat?groupId=${group._id}`}>
                   <button className="bg-violet-500 text-white px-4 py-2 rounded-xl font-outfitRegular hover:scale-[1.02] transition-all duration-300">
                     Open Chat
                   </button>
