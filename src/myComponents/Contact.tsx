@@ -24,7 +24,7 @@ const Contact = () => {
               Making an <span className="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">Impact</span>
             </h1>
             <p className="text-2xl text-gray-600 dark:text-gray-300 max-w-4xl mx-auto">
-              MentorConnective empowers women in tech to build meaningful careers through mentorship, community, and professional growth.
+              MentorHer empowers women in tech to build meaningful careers through mentorship, community, and professional growth.
             </p>
           </div>
 
@@ -102,7 +102,7 @@ const Contact = () => {
               </p>
               <div className="flex flex-col sm:flex-row gap-6 justify-center">
                 <Button asChild className="rounded-full text-lg py-7 px-10 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 transition-all duration-300 shadow-lg">
-                  <Link href="/scheduler">
+                  <Link href="/find-mentor">
                     <span className="flex items-center gap-3 font-semibold">
                       Find a Mentor
                       <ArrowRight size={20} className="transition-transform duration-300 group-hover:translate-x-1" />
