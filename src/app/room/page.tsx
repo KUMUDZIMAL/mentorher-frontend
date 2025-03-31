@@ -13,7 +13,7 @@ const Page = () => {
   useEffect(() => {
     async function checkAuth() {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user", { cache: "no-store",   credentials: "include", });
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user", { cache: "no-store", credentials: "include" });
         const data = await res.json();
         // Adjust based on your API response structure
         if (data && data._id) {
@@ -43,7 +43,8 @@ const Page = () => {
 
   const handleClick = () => {
     if (roomId.trim()) {
-      window.location.href = `/video-call/${roomId}`;
+      // Updated to use a query parameter instead of a dynamic segment.
+      window.location.href = `/video-call?roomId=${roomId}`;
     } else {
       alert("Please enter a valid Room ID");
     }
