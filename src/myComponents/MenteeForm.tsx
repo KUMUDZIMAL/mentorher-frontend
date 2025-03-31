@@ -69,7 +69,8 @@ const MenteeForm = ({ onSubmit, isSubmitting }: MenteeFormProps) => {
     mode: "onChange",
   });
 
-  const onImageUpload = (image: string) => {
+  // Update onImageUpload to accept a string or null.
+  const onImageUpload = (image: string | null) => {
     setProfileImage(image);
     form.setValue("profilePhoto", image);
   };
@@ -174,9 +175,7 @@ const MenteeForm = ({ onSubmit, isSubmitting }: MenteeFormProps) => {
                       <Avatar className="w-32 h-32 border-2 border-primary/20">
                         <AvatarImage src={profileImage || ""} />
                         <AvatarFallback className="text-3xl font-light">
-                          {form.watch("fullName")
-                            ? form.watch("fullName").charAt(0).toUpperCase()
-                            : "?"}
+                          {(form.watch("fullName")?.charAt(0).toUpperCase()) ?? "?"}
                         </AvatarFallback>
                       </Avatar>
                       <ImageUpload
