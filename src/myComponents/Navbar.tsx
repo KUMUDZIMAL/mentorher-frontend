@@ -20,7 +20,7 @@ export default function Navbar() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("/api/auth/user", { cache: "no-store" });
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user", { cache: "no-store" });
         const data = await res.json();
         console.log("Fetched auth data:", data);
 
@@ -43,7 +43,7 @@ export default function Navbar() {
   // Handle logout.
   const handleLogout = async () => {
     try {
-      const res = await fetch("/api/auth/logout", { method: "POST" });
+      const res = await fetch("https://mentorher-backend.vercel.app/api/auth/logout", { method: "POST" });
       if (res.ok) {
         setUser(null);
       }
