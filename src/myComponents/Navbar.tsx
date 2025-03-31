@@ -20,7 +20,7 @@ export default function Navbar() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user", { cache: "no-store"  ,credentials: "include", });
+        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user", { cache: "no-store", credentials: "include" });
         const data = await res.json();
         console.log("Fetched auth data:", data);
 
@@ -43,7 +43,7 @@ export default function Navbar() {
   // Handle logout.
   const handleLogout = async () => {
     try {
-      const res = await fetch("https://mentorher-backend.vercel.app/api/auth/logout", { method: "POST" ,  credentials: "include",});
+      const res = await fetch("https://mentorher-backend.vercel.app/api/auth/logout", { method: "POST", credentials: "include" });
       if (res.ok) {
         setUser(null);
       }
@@ -118,7 +118,8 @@ export default function Navbar() {
                 </Link>
                 {user && (
                   <Link
-                    href={`/recommendations/${user._id}`}
+                    // Updated link: using query parameter for userId
+                    href={`/recommendations?userId=${user._id}`}
                     className="block px-4 py-2 text-gray-700 hover:bg-gray-100"
                     onClick={() => setIsDropdownOpen(false)}
                   >

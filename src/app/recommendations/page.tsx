@@ -59,7 +59,7 @@ const RecommendationsPage = () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch(`https://mentorher-backend.vercel.app/api/recommendations/${userId}`);
+        const res = await fetch(`https://mentorher-backend.vercel.app/api/recommendations?userId=${userId}`);
         if (!res.ok) {
           throw new Error("Failed to fetch recommendations");
         }
