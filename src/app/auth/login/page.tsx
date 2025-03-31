@@ -16,7 +16,7 @@ const Login: React.FC = () => {
     setError('');
 
     try {
-      const response = await fetch('https://mentorher-backend-feq6p6axw-kumud-s-projects.vercel.app/auth/login', {
+      const response = await fetch('https://mentorher-backend-feq6p6axw-kumud-s-projects.vercel.app/api/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
