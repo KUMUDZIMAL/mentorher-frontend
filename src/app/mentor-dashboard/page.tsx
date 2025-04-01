@@ -224,7 +224,7 @@ const MentorDashboard = () => {
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50">
-      {/* Subtle floating elements */}
+ 
       <motion.div 
         animate={{
           y: [0, -15, 0],
