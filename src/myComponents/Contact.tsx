@@ -110,7 +110,7 @@ const Contact = () => {
                   </Link>
                 </Button>
                 <Button asChild variant="outline" className="rounded-full text-lg py-7 px-10 border-purple-600 text-purple-600 hover:bg-purple-50/50 dark:hover:bg-purple-800/10 transition-colors duration-300">
-                  <Link href="/become-mentor">
+                  <Link href="/BecomeMentor">
                     <span className="flex items-center gap-3 font-medium">
                       Become a Mentor
                     </span>

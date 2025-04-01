@@ -3,7 +3,10 @@ import { z } from "zod";
 export const menteeFormSchema = z.object({
   // Personal Information
   fullName: z.string().nonempty("Full Name is required"),
-  email: z.string().nonempty("Email is required").email("Please enter a valid email address"),
+  email: z
+    .string()
+    .nonempty("Email is required")
+    .email("Please enter a valid email address"),
   phone: z.string().nonempty("Phone number is required"),
   profilePhoto: z.any(), // Adjust validation as needed for your image type
 
@@ -22,6 +25,7 @@ export const menteeFormSchema = z.object({
   // Mentorship Preferences
   mentorshipGoals: z.string().nonempty("Mentorship goals are required"),
   preferredMentorshipAreas: z.array(z.string()).min(1, "At least one mentorship area is required"),
+  // Make availability completely optional
   availability: z
     .array(
       z.object({
@@ -30,7 +34,7 @@ export const menteeFormSchema = z.object({
         endTime: z.string().nonempty("End time is required"),
       })
     )
-    .min(1, "At least one availability slot is required"),
+    .optional(),
 
   // Additional Information
   linkedinUrl: z
@@ -62,13 +66,8 @@ export const defaultMenteeFormValues: MenteeFormValues = {
   technicalSkills: [],
   mentorshipGoals: "",
   preferredMentorshipAreas: [],
-  availability: [
-    {
-      day: "",
-      startTime: "",
-      endTime: "",
-    },
-  ],
+  // Set availability to an empty array (or you could remove it entirely)
+  availability: [],
   linkedinUrl: "",
   personalBio: "",
   challenges: "",
