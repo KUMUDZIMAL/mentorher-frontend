@@ -252,7 +252,7 @@ const MentorDashboard = () => {
         className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-blue-100/20 rounded-full mix-blend-overlay filter blur-xl"
       />
 
-
+<Navbar/>
     
       <motion.main 
         initial="hidden"
