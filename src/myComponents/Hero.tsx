@@ -73,7 +73,7 @@ const Hero = () => {
     {
       icon: <Globe className="w-10 h-10 text-emerald-700" />,
       title: "Become a Mentor",
-      description: "Connect with mentors worldwide",
+      description: "Become a Mentor and Share Your Knowledge",
       color: "from-emerald-100 to-green-200",
       route: "/BecomeMentor"
     }
@@ -120,7 +120,7 @@ const Hero = () => {
                 </p>
                 <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                   <Link href={feature.route}>
-                    <ArrowRight className="w-6 h-6 text-pink-600" />
+                    <ArrowRight className="w-6 h-6 text-pink-600 mt-4" />
                   </Link>
                 </div>
               </div>
