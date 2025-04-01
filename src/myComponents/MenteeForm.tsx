@@ -79,9 +79,27 @@ const MenteeForm = ({ onSubmit, isSubmitting }: MenteeFormProps) => {
     setCurrentStep(step);
   };
 
-  const handleNext = (e: React.MouseEvent) => {
+  // Validate current step fields before proceeding
+  const handleNext = async (e: React.MouseEvent) => {
     e.preventDefault();
-    handleStepChange(currentStep + 1);
+    let fieldsToValidate: (keyof MenteeFormValues)[] = [];
+
+    // Define required fields for each step
+    if (currentStep === 0) {
+      fieldsToValidate = ["fullName", "email", "phone", "profilePhoto"];
+    } else if (currentStep === 1) {
+      fieldsToValidate = ["currentStatus", "education", "fieldOfStudy", "careerGoals"];
+    } else if (currentStep === 2) {
+      fieldsToValidate = ["technicalBackground", "technicalSkills", "mentorshipGoals", "preferredMentorshipAreas"];
+    } else if (currentStep === 3) {
+      fieldsToValidate = ["linkedinUrl", "personalBio", "languages", "termsAgreed"];
+      // Note: "challenges" is optional per your schema so it's not validated here.
+    }
+
+    const isValid = await form.trigger(fieldsToValidate);
+    if (isValid) {
+      setCurrentStep(currentStep + 1);
+    }
   };
 
   const handlePrevious = (e: React.MouseEvent) => {
@@ -155,7 +173,7 @@ const MenteeForm = ({ onSubmit, isSubmitting }: MenteeFormProps) => {
               name="phone"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Phone Number (Optional)</FormLabel>
+                  <FormLabel>Phone Number</FormLabel>
                   <FormControl>
                     <Input type="tel" placeholder="Your phone number" {...field} />
                   </FormControl>
