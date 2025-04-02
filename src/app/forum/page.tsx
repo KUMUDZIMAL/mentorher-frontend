@@ -169,7 +169,7 @@ export default function DiscussionForum() {
 
     return (
         <div className="min-h-screen relative overflow-hidden">
-        <Navbar></Navbar>
+   
             <div className="fixed inset-0 z-[-2] overflow-hidden">
                 <div className="absolute -top-40 -left-40 w-[40rem] h-[40rem] bg-purple-600/20 rounded-full blur-3xl animate-float animation-delay-0"></div>
                 <div className="absolute top-1/3 right-0 w-[35rem] h-[35rem] bg-pink-600/20 rounded-full blur-3xl animate-float animation-delay-2000"></div>
@@ -179,8 +179,8 @@ export default function DiscussionForum() {
 
             {/* Glass Overlay */}
             <div className="fixed inset-0 z-[-1] backdrop-blur-[100px] bg-white/10" />
-
-            <div className="max-w-7xl mx-auto p-4 md:p-8 relative">
+            <Navbar></Navbar>
+            <div className="max-w-7xl mx-auto p-4 md:p-8 relative mt-10">
                 {/* Header */}
                 <header className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-800 mb-1">MentorHer Forum</h1>

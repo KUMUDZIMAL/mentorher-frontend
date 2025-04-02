@@ -86,7 +86,7 @@ const mentors = [
     expertise: ["Python", "TensorFlow", "Machine Learning"],
     isAvailable: false,
     rating: 4.6,
-    imageUrl: "/mentors/michael.png",
+    imageUrl: "/mentors/micheal.png",
     calendarLink: "https://calendar.google.com/",
   },
   {

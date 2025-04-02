@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import Navbar from './Navbar';
 
 interface Participant {
   _id: string;
@@ -103,8 +104,8 @@ export default function GroupChatPage() {
         <div className="absolute w-80 h-80 bg-orange-300/30 rounded-full blur-3xl top-0 right-60"></div>
         <div className="absolute w-80 h-80 bg-orange-300/30 rounded-full blur-3xl top-20 left-20"></div>
       </div>
-      
-      <div className="max-w-4xl mx-auto relative">
+     <Navbar></Navbar> 
+      <div className="max-w-4xl mx-auto relative mt-15">
         <h1 className="text-3xl mb-6 font-valueSerif text-slate-700">
           Group Chats
         </h1>

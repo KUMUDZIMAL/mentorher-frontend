@@ -155,7 +155,7 @@ export default function ChatbotPage() {
   return (
     <div>
     <Navbar/>
-    <div className="flex items-center justify-center w-screen h-screen p-6 mt-20">
+    <div className="flex items-center justify-center w-screen h-screen p-6 mt-40">
       <div className="absolute inset-0">
         <div className="absolute w-96 h-96 bg-blue-400/30 rounded-full blur-3xl -top-20 -left-20"></div>
         <div className="absolute w-96 h-96 bg-purple-400/30 rounded-full blur-3xl top-40 left-60"></div>
