@@ -2,6 +2,7 @@
 import { Button } from '@/components/ui/button';
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import Navbar from '@/myComponents/Navbar';
 
 const Page = () => {
   const router = useRouter();
@@ -56,6 +57,7 @@ const Page = () => {
 
   return (
     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <Navbar></Navbar>
       <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
         <h2 className="text-2xl font-bold mb-6 text-center text-purple-600">
           Join a Video Call

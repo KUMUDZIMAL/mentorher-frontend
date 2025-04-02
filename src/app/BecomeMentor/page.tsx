@@ -7,6 +7,7 @@ import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import MentorForm from "../../myComponents/MentorForm";
+import Navbar from "@/myComponents/Navbar";
 
 const BecomeMentor: React.FC = () => {
   const router = useRouter();
@@ -71,7 +72,8 @@ const BecomeMentor: React.FC = () => {
             transition={{ duration: 0.3 }}
             className="w-full max-w-4xl"
           >
-            <div className="text-center mb-12">
+            <Navbar></Navbar>
+            <div className="text-center mb-12 mt-40">
               <div className="inline-block px-5 py-2.5 rounded-full bg-white/20 backdrop-blur-sm text-black text-lg font-medium mb-6 border border-white/30">
                 Mentor Application
               </div>

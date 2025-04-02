@@ -164,7 +164,7 @@ export default function ChatbotPage() {
         <div className="absolute w-80 h-80 bg-orange-300/30 rounded-full blur-3xl top-0 right-60"></div>
         <div className="absolute w-80 h-80 bg-orange-300/30 rounded-full blur-3xl top-20 left-20"></div>
       </div>
-      <Card className="max-w-6xl z-10 mt-20">
+      <Card className="max-w-6xl z-10 mt-40">
         <CardHeader>
           <Avatar initials="AI" className="bg-purple-500" />
           <CardTitle className="font-outfitLight text-slate-800">YOUR AI CAREER PATH GENERATOR</CardTitle>

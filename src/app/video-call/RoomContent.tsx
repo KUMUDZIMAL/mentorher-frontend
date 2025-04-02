@@ -2,6 +2,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
+import Navbar from "@/myComponents/Navbar";
 
 const RoomContent: React.FC = () => {
   // Get the roomId from the query string
@@ -83,7 +84,8 @@ const RoomContent: React.FC = () => {
 
   return (
     <div>
-      <div ref={meetingRef} style={{ width: "100%", border: "2px solid red" }} />
+      <Navbar></Navbar>
+      <div ref={meetingRef} style={{ width: "100%", border: "2px solid red", marginTop:"40px"}} />
     </div>
   );
 };

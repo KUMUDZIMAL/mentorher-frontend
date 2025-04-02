@@ -98,7 +98,7 @@ const BecomeMentor: React.FC = () => {
             <ArrowLeft className="h-5 w-5" />
             Back to Home
           </Button>
-          <h1 className="text-3xl font-bold text-white" >Become a Mentee</h1>
+          <h1 className="text-3xl font-bold text-black mr-4" >Become a Mentee</h1>
           <div className="w-24" />
         </div>
       </header>
