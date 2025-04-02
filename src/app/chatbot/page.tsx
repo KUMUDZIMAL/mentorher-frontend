@@ -155,7 +155,7 @@ export default function ChatbotPage() {
   return (
     <div>
     <Navbar/>
-    <div className="flex items-center justify-center w-screen h-screen p-6 mt-40">
+    <div className="flex items-center justify-center w-screen h-screen p-6">
       <div className="absolute inset-0">
         <div className="absolute w-96 h-96 bg-blue-400/30 rounded-full blur-3xl -top-20 -left-20"></div>
         <div className="absolute w-96 h-96 bg-purple-400/30 rounded-full blur-3xl top-40 left-60"></div>
@@ -164,7 +164,7 @@ export default function ChatbotPage() {
         <div className="absolute w-80 h-80 bg-orange-300/30 rounded-full blur-3xl top-0 right-60"></div>
         <div className="absolute w-80 h-80 bg-orange-300/30 rounded-full blur-3xl top-20 left-20"></div>
       </div>
-      <Card className="max-w-6xl z-10">
+      <Card className="max-w-6xl z-10 mt-20">
         <CardHeader>
           <Avatar initials="AI" className="bg-purple-500" />
           <CardTitle className="font-outfitLight text-slate-800">YOUR AI CAREER PATH GENERATOR</CardTitle>

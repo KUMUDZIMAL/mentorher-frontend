@@ -180,7 +180,7 @@ export default function DiscussionForum() {
             {/* Glass Overlay */}
             <div className="fixed inset-0 z-[-1] backdrop-blur-[100px] bg-white/10" />
             <Navbar></Navbar>
-            <div className="max-w-7xl mx-auto p-4 md:p-8 relative mt-10">
+            <div className="max-w-7xl mx-auto p-4 md:p-8 relative mt-20">
                 {/* Header */}
                 <header className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-800 mb-1">MentorHer Forum</h1>

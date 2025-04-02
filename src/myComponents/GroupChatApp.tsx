@@ -105,7 +105,7 @@ export default function GroupChatPage() {
         <div className="absolute w-80 h-80 bg-orange-300/30 rounded-full blur-3xl top-20 left-20"></div>
       </div>
      <Navbar></Navbar> 
-      <div className="max-w-4xl mx-auto relative mt-15">
+      <div className="max-w-4xl mx-auto relative mt-22">
         <h1 className="text-3xl mb-6 font-valueSerif text-slate-700">
           Group Chats
         </h1>

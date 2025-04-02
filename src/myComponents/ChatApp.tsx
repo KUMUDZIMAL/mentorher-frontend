@@ -107,9 +107,9 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
   return (
     <div className="chat-app p-4">
       <Navbar></Navbar>
-      {error && <p className="text-red-500 mb-2">{error}</p>}
+      {error && <p className="text-red-500 mb-2 mt-10">{error}</p>}
       {/* Messages List */}
-      <div className="message-list border rounded p-2 mb-4 h-64 overflow-y-auto">
+      <div className="message-list border rounded p-2 mb-4 h-64 overflow-y-auto ">
         {messages.length > 0 ? (
           messages.map((msg) => (
             <div key={msg._id} className="message mb-2 p-2 rounded bg-gray-100">
