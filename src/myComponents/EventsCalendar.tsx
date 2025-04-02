@@ -41,7 +41,17 @@ const upcomingEvents: EventType[] = [
     category: "Workshop",
     isVirtual: true,
   },
-  // ...other events
+  {
+    id: 3,
+    title: "Full Stack Bootcamp 2025",
+    date: "April 5, 2025",
+    time: "9:00 AM - 4:00 PM",
+    location: "New York & Virtual",
+    image: "/events/event3.jpeg",
+    attendees: 700,
+    category: "Bootcamp",
+    isVirtual: true,
+  },
 ];
 
 const EventsCalendar: React.FC = () => {
