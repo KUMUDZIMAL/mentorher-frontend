@@ -252,13 +252,14 @@ const MentorDashboard = () => {
         className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-blue-100/20 rounded-full mix-blend-overlay filter blur-xl"
       />
 
+<Navbar/>
 
     
       <motion.main 
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="flex-1 px-4 py-8 max-w-7xl mx-auto w-full"
+        className="flex-1 px-4 py-8 max-w-7xl mx-auto w-full mt-20"
       >
         {/* Header Section */}
         <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-6 mb-8">
