@@ -116,7 +116,7 @@ export default function RecommendationsContent() {
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-transparent">
       <Navbar />
-      <div className="fixed inset-0 z-[-1] overflow-hidden">
+      <div className="fixed inset-0 z-[-1] overflow-hidden mt-10">
         <div className="absolute -top-40 -left-40 w-[40rem] h-[40rem] bg-purple-600/20 rounded-full blur-3xl"></div>
         <div className="absolute top-1/3 right-0 w-[35rem] h-[35rem] bg-pink-600/20 rounded-full blur-3xl"></div>
         <div className="absolute bottom-0 left-1/4 w-[40rem] h-[40rem] bg-blue-600/20 rounded-full blur-3xl"></div>

@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState, KeyboardEvent } from "react";
+import Navbar from "./Navbar";
 
 interface Message {
   _id: string;
@@ -105,6 +106,7 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
 
   return (
     <div className="chat-app p-4">
+      <Navbar></Navbar>
       {error && <p className="text-red-500 mb-2">{error}</p>}
       {/* Messages List */}
       <div className="message-list border rounded p-2 mb-4 h-64 overflow-y-auto">

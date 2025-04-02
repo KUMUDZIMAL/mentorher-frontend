@@ -33,7 +33,11 @@ const Page = () => {
   }, [router]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        Loading...
+      </div>
+    );
   }
 
   if (!user) {
@@ -51,14 +55,22 @@ const Page = () => {
   };
 
   return (
-    <div>
-      <input
-        placeholder="Enter Room ID"
-        name="roomid"
-        value={roomId}
-        onChange={(e) => setRoomId(e.target.value)}
-      />
-      <Button onClick={handleClick}>Join</Button>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-lg">
+        <h2 className="text-2xl font-bold mb-6 text-center text-purple-600">
+          Join a Video Call
+        </h2>
+        <input
+          className="w-full border border-gray-300 rounded px-3 py-2 mb-4 focus:outline-none focus:border-purple-600"
+          placeholder="Enter Room ID"
+          name="roomid"
+          value={roomId}
+          onChange={(e) => setRoomId(e.target.value)}
+        />
+        <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white" onClick={handleClick}>
+          Join
+        </Button>
+      </div>
     </div>
   );
 };

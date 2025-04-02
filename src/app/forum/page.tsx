@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import Link from "next/link";
-
+import Navbar from '@/myComponents/Navbar';
 // Define types for better type safety
 interface User {
     name: string;
@@ -169,7 +169,7 @@ export default function DiscussionForum() {
 
     return (
         <div className="min-h-screen relative overflow-hidden">
-            {/* Blob Background */}
+        <Navbar></Navbar>
             <div className="fixed inset-0 z-[-2] overflow-hidden">
                 <div className="absolute -top-40 -left-40 w-[40rem] h-[40rem] bg-purple-600/20 rounded-full blur-3xl animate-float animation-delay-0"></div>
                 <div className="absolute top-1/3 right-0 w-[35rem] h-[35rem] bg-pink-600/20 rounded-full blur-3xl animate-float animation-delay-2000"></div>
