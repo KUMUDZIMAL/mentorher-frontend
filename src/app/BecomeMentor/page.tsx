@@ -73,7 +73,7 @@ const BecomeMentor: React.FC = () => {
             className="w-full max-w-4xl"
           >
             <Navbar></Navbar>
-            <div className="text-center mb-12 mt-40">
+            <div className="text-center mb-12 mt-25">
               <div className="inline-block px-5 py-2.5 rounded-full bg-white/20 backdrop-blur-sm text-black text-lg font-medium mb-6 border border-white/30">
                 Mentor Application
               </div>
