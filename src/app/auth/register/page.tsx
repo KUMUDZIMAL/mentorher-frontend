@@ -1,12 +1,12 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-const Register = () => {
+const Register: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [email, setEmail] = useState('');
-  const [age, setAge] = useState<number | null>(null); // State for age
+  const [age, setAge] = useState<number | null>(null);
   const [gender, setGender] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -20,23 +20,19 @@ const Register = () => {
     try {
       const response = await fetch('https://mentorher-backend.vercel.app/api/auth/register', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, age, gender, password }),
       });
 
       const data = await response.json();
-
       if (!response.ok) {
         setError(data.error || 'Something went wrong');
         setLoading(false);
         return;
       }
-
       router.push('/auth/login');
-    } catch (error) {
-      console.error('Error during registration:', error);
+    } catch (err) {
+      console.error('Error during registration:', err);
       setError('An error occurred during registration');
     }
 
@@ -44,20 +40,20 @@ const Register = () => {
   };
 
   return (
-    <div className="flex h-screen w-full relative justify-center items-center bg-violet-50">
-      {/* Background Gradient and Blurred Circles */}
+    <div className="flex h-screen w-full relative justify-center items-center bg-pink-50">
+      {/* Background Pastel Circles */}
       <div className="absolute inset-0 flex justify-center items-center">
-        <div className="absolute w-96 h-96 bg-blue-400/30 rounded-full blur-3xl -top-20 -left-20"></div>
-        <div className="absolute w-96 h-96 bg-purple-400/30 rounded-full blur-3xl top-40 left-60"></div>
-        <div className="absolute w-80 h-80 bg-blue-500/30 rounded-full blur-3xl bottom-0 right-20"></div>
-        <div className="absolute w-72 h-72 bg-purple-500/30 rounded-full blur-3xl -right-20 top-10"></div>
-        <div className="absolute w-80 h-80 bg-orange-300/30 rounded-full blur-3xl top-0 right-60"></div>
-        <div className="absolute w-80 h-80 bg-orange-300/30 rounded-full blur-3xl top-20 left-20"></div>
+        <div className="absolute w-96 h-96 bg-pink-300/30 rounded-full blur-3xl -top-20 -left-20"></div>
+        <div className="absolute w-96 h-96 bg-purple-300/30 rounded-full blur-3xl top-40 left-60"></div>
+        <div className="absolute w-80 h-80 bg-pink-200/30 rounded-full blur-3xl bottom-0 right-20"></div>
+        <div className="absolute w-72 h-72 bg-purple-200/30 rounded-full blur-3xl -right-20 top-10"></div>
+        <div className="absolute w-80 h-80 bg-yellow-200/30 rounded-full blur-3xl top-0 right-60"></div>
+        <div className="absolute w-80 h-80 bg-pink-200/30 rounded-full blur-3xl top-20 left-20"></div>
       </div>
 
       {/* Registration Form */}
       <div className="w-96 p-6 bg-white rounded-xl shadow-lg z-10">
-        <h2 className="text-2xl font-bold text-center mb-6">Sign Up</h2>
+        <h2 className="text-2xl font-bold text-center mb-6 text-pink-600">Sign Up</h2>
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -69,10 +65,11 @@ const Register = () => {
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-2 hover:border-violet-700 border-2 rounded-md mt-1"
+              className="w-full p-2 border-2 rounded-md mt-1 hover:border-pink-600 focus:outline-none focus:border-pink-600"
               required
             />
           </div>
+
           <div className="mb-4">
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email
@@ -82,7 +79,7 @@ const Register = () => {
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full p-2 hover:border-violet-700 border-2 rounded-md mt-1"
+              className="w-full p-2 border-2 rounded-md mt-1 hover:border-pink-600 focus:outline-none focus:border-pink-600"
               required
             />
           </div>
@@ -92,15 +89,15 @@ const Register = () => {
               Age
             </label>
             <input
-              type="number" // Use 'number' instead of 'Number'
+              type="number"
               id="age"
               value={age !== null ? age : ''}
-              onChange={(e) => setAge(e.target.value ? Number(e.target.value) : null)} // Convert to number or null
-              className="w-full p-2 hover:border-violet-700 border-2 rounded-md mt-1"
+              onChange={(e) => setAge(e.target.value ? Number(e.target.value) : null)}
+              className="w-full p-2 border-2 rounded-md mt-1 hover:border-pink-600 focus:outline-none focus:border-pink-600"
             />
           </div>
 
-          
+       
 
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
@@ -111,28 +108,26 @@ const Register = () => {
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full p-2 rounded-md mt-1 hover:border-violet-700 border-2"
+              className="w-full p-2 border-2 rounded-md mt-1 hover:border-pink-600 focus:outline-none focus:border-pink-600"
               required
             />
           </div>
+
           <button
             type="submit"
-            className="w-full py-2 bg-violet-700 text-white rounded-md hover:bg-violet-700"
+            className="w-full py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors"
             disabled={loading}
           >
             {loading ? 'Creating account...' : 'Sign Up'}
           </button>
         </form>
-        <div className='mt-4 text-center'></div>
-        <p className="mt-2 text-sm text-center">
-              Already have an account?{' '}
-              <a
-                href="/auth/login"
-                className="text-violet-700 hover:underline"
-              >
-                Login
-              </a>
-            </p>
+
+        <p className="mt-4 text-center text-gray-600">
+          Already have an account?{' '}
+          <a href="/auth/login" className="text-pink-600 hover:underline">
+            Login
+          </a>
+        </p>
       </div>
     </div>
   );
