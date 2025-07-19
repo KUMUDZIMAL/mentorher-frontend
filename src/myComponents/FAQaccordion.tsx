@@ -34,7 +34,7 @@ export function FAQAccordion() {
   ]
 
   return (
-    <div className="relative w-full py-20 overflow-hidden bg-gradient-to-b from-white/10 to-gray-50/10">
+    <div className="relative w-full py-12 sm:py-16 lg:py-20 overflow-hidden bg-gradient-to-b from-white/10 to-gray-50/10">
       {/* Extended background gradient elements */}
       {/* <div className="absolute inset-0 overflow-hidden">
         <div className="absolute -top-32 -left-32 w-96 h-96 bg-purple-600/20 rounded-full blur-3xl"></div>
@@ -42,30 +42,30 @@ export function FAQAccordion() {
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-blue-600/15 rounded-full blur-3xl"></div>
       </div> */}
 
-      <div className="relative z-10 max-w-4xl mx-auto px-6">
-        <h2 className="text-3xl font-bold text-center mb-8 bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text text-transparent">
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <h2 className="text-2xl sm:text-3xl font-bold text-center mb-6 sm:mb-8 bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 bg-clip-text text-transparent leading-tight">
           Frequently Asked Questions
         </h2>
 
-        <Accordion type="single" collapsible className="w-full space-y-4">
+        <Accordion type="single" collapsible className="w-full space-y-3 sm:space-y-4">
           {faqItems.map((item) => (
             <AccordionItem
               key={item.id}
               value={item.id}
-              className="bg-white/10 backdrop-blur-md border border-white/20 rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-white/10 backdrop-blur-md border border-white/20 rounded-lg sm:rounded-xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300"
             >
-              <AccordionTrigger className="px-6 py-4 hover:no-underline group">
-                <div className="flex items-center space-x-3">
-                  <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-2 rounded-lg">
-                    <ChevronDown className="w-5 h-5 text-white transform transition-transform duration-300 group-data-[state=open]:rotate-180" />
+              <AccordionTrigger className="px-4 sm:px-6 py-3 sm:py-4 hover:no-underline group">
+                <div className="flex items-center space-x-2 sm:space-x-3">
+                  <div className="bg-gradient-to-r from-pink-500 to-purple-600 p-1.5 sm:p-2 rounded-lg">
+                    <ChevronDown className="w-4 h-4 sm:w-5 sm:h-5 text-white transform transition-transform duration-300 group-data-[state=open]:rotate-180" />
                   </div>
-                  <span className="text-lg font-medium text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400">
+                  <span className="text-sm sm:text-base lg:text-lg font-medium text-gray-800 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 leading-relaxed">
                     {item.question}
                   </span>
                 </div>
               </AccordionTrigger>
-              <AccordionContent className="px-6 pb-4 text-gray-700 dark:text-gray-200">
-                <div className="pl-10">{item.answer}</div>
+              <AccordionContent className="px-4 sm:px-6 pb-3 sm:pb-4 text-gray-700 dark:text-gray-200">
+                <div className="pl-6 sm:pl-10 text-sm sm:text-base leading-relaxed">{item.answer}</div>
               </AccordionContent>
             </AccordionItem>
           ))}

@@ -76,7 +76,7 @@ const MenteeDashboard = () => {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50 pt-20">
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50 pt-16">
       {/* Subtle floating elements */}
       <motion.div 
         animate={{
@@ -89,7 +89,7 @@ const MenteeDashboard = () => {
           repeatType: "reverse",
           ease: "easeInOut"
         }}
-        className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-100/20 rounded-full mix-blend-overlay filter blur-xl"
+        className="absolute top-1/4 left-1/4 w-32 sm:w-48 lg:w-64 h-32 sm:h-48 lg:h-64 bg-purple-100/20 rounded-full mix-blend-overlay filter blur-xl"
       />
       <motion.div 
         animate={{
@@ -102,7 +102,7 @@ const MenteeDashboard = () => {
           repeatType: "reverse",
           ease: "easeInOut"
         }}
-        className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-blue-100/20 rounded-full mix-blend-overlay filter blur-xl"
+        className="absolute bottom-1/3 right-1/4 w-36 sm:w-56 lg:w-72 h-36 sm:h-56 lg:h-72 bg-blue-100/20 rounded-full mix-blend-overlay filter blur-xl"
       />
 
       <Navbar/>
@@ -111,24 +111,24 @@ const MenteeDashboard = () => {
         initial="hidden"
         animate="visible"
         variants={containerVariants}
-        className="flex-1 px-4 py-8 max-w-7xl mx-auto w-full"
+        className="flex-1 px-4 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-7xl mx-auto w-full"
       >
         {/* Header Section */}
-        <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-6 mb-8">
-          <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-4 sm:p-6 mb-6 sm:mb-8">
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">Mentee Dashboard</h1>
-              <p className="text-gray-600">Track your mentorship journey and upcoming sessions</p>
+              <h1 className="text-xl sm:text-2xl font-bold text-gray-800">Mentee Dashboard</h1>
+              <p className="text-sm sm:text-base text-gray-600">Track your mentorship journey and upcoming sessions</p>
             </div>
             
-            <div className="flex gap-3 w-full md:w-auto">
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="w-full md:w-auto">
-                <Button className="w-full bg-white text-gray-800 border hover:bg-gray-50 backdrop-blur-sm" onClick={() => router.push("/find-mentor")}>
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+                <Button className="w-full sm:w-auto bg-white text-gray-800 border hover:bg-gray-50 backdrop-blur-sm text-sm sm:text-base" onClick={() => router.push("/find-mentor")}>
                   Find Mentors
                 </Button>
               </motion.div>
-              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="w-full md:w-auto">
-                <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white backdrop-blur-sm" onClick={() => router.push("/profile/mentee")}>
+              <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="w-full sm:w-auto">
+                <Button className="w-full sm:w-auto bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white backdrop-blur-sm text-sm sm:text-base" onClick={() => router.push("/profile/mentee")}>
                 View Public Profile
                 </Button>
               </motion.div>
@@ -137,7 +137,7 @@ const MenteeDashboard = () => {
         </motion.div>
         
         {/* Stats Cards */}
-        <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 sm:mb-8">
           {[
             { icon: Users, label: "My Mentors", value: 3, iconColor: "text-purple-500" },
             { icon: CalendarIcon, label: "Upcoming Sessions", value: 2, iconColor: "text-blue-500" },
@@ -161,23 +161,23 @@ const MenteeDashboard = () => {
           {/* Left Column - Sessions and Mentors */}
           <div className="lg:col-span-2 space-y-6">
             {/* Sessions Card */}
-            <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-6">
+            <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">My Sessions</h2>
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-800">My Sessions</h2>
                 <motion.div whileHover={{ scale: 1.03 }}>
-                  <Button variant="outline" size="sm" className="text-purple-600 border-purple-200 backdrop-blur-sm">
+                  <Button variant="outline" size="sm" className="text-purple-600 border-purple-200 backdrop-blur-sm text-sm">
                     View All
                   </Button>
                 </motion.div>
               </div>
               
-              <div className="flex border-b border-gray-200 mb-6">
+              <div className="flex flex-wrap border-b border-gray-200 mb-6">
                 {['upcoming', 'past', 'requested'].map((tab) => (
                   <motion.button
                     key={tab}
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.98 }}
-                    className={`px-4 py-2 text-sm font-medium ${activeTab === tab ? 'text-purple-600 border-b-2 border-purple-600' : 'text-gray-500 hover:text-gray-700'}`}
+                    className={`px-3 sm:px-4 py-2 text-xs sm:text-sm font-medium ${activeTab === tab ? 'text-purple-600 border-b-2 border-purple-600' : 'text-gray-500 hover:text-gray-700'}`}
                     onClick={() => setActiveTab(tab)}
                   >
                     {tab === 'upcoming' ? 'Upcoming' : tab === 'past' ? 'Past Sessions' : 'Requested'}
@@ -262,11 +262,11 @@ const MenteeDashboard = () => {
             </motion.div>
             
             {/* Recommended Mentors Card */}
-            <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-6">
+            <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">Recommended Mentors</h2>
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Recommended Mentors</h2>
                 <motion.div whileHover={{ scale: 1.03 }}>
-                  <Button variant="ghost" size="sm" className="text-purple-600 backdrop-blur-sm">
+                  <Button variant="ghost" size="sm" className="text-purple-600 backdrop-blur-sm text-sm">
                     <Search className="h-4 w-4 mr-1" />
                     Find More
                   </Button>
@@ -305,10 +305,10 @@ const MenteeDashboard = () => {
           {/* Right Column - Messages and Events */}
           <div className="space-y-6">
             {/* Messages Card */}
-            <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-6">
+            <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                 <div className="flex items-center">
-                  <h2 className="text-xl font-semibold text-gray-800">Messages</h2>
+                  <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Messages</h2>
                   <motion.div 
                     animate={{ scale: [1, 1.1, 1] }}
                     transition={{ duration: 2, repeat: Infinity }}
@@ -318,7 +318,7 @@ const MenteeDashboard = () => {
                   </motion.div>
                 </div>
                 <motion.div whileHover={{ scale: 1.03 }}>
-                  <Button variant="ghost" size="sm" className="text-purple-600 backdrop-blur-sm">
+                  <Button variant="ghost" size="sm" className="text-purple-600 backdrop-blur-sm text-sm">
                     View All
                   </Button>
                 </motion.div>
@@ -349,11 +349,11 @@ const MenteeDashboard = () => {
             </motion.div>
             
             {/* Upcoming Events Card */}
-            <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-6">
+            <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-4 sm:p-6">
               <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
-                <h2 className="text-xl font-semibold text-gray-800">Upcoming Events</h2>
+                <h2 className="text-lg sm:text-xl font-semibold text-gray-800">Upcoming Events</h2>
                 <motion.div whileHover={{ scale: 1.03 }}>
-                  <Button variant="ghost" size="sm" className="text-purple-600 backdrop-blur-sm">
+                  <Button variant="ghost" size="sm" className="text-purple-600 backdrop-blur-sm text-sm">
                     <Bell className="h-4 w-4 mr-1" />
                     Notify Me
                   </Button>
@@ -363,30 +363,30 @@ const MenteeDashboard = () => {
               <div className="space-y-4">
                 <motion.div 
                   whileHover={{ y: -3 }}
-                  className="border border-gray-200/30 rounded-lg p-4 hover:shadow-sm transition-shadow"
+                  className="border border-gray-200/30 rounded-lg p-3 sm:p-4 hover:shadow-sm transition-shadow"
                 >
                   <div className="bg-gradient-to-r from-purple-500 to-pink-500 h-1 w-full rounded-full mb-3"></div>
-                  <h3 className="font-medium text-gray-800">Women in Tech Networking</h3>
-                  <div className="flex items-center text-sm text-gray-500 mt-1">
-                    <Calendar className="h-4 w-4 mr-2" />
+                  <h3 className="font-medium text-gray-800 text-sm sm:text-base">Women in Tech Networking</h3>
+                  <div className="flex items-center text-xs sm:text-sm text-gray-500 mt-1">
+                    <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                     October 20, 2023 • 6:00 PM
                   </div>
-                  <p className="text-sm text-gray-600 mt-2">
+                  <p className="text-xs sm:text-sm text-gray-600 mt-2">
                     Virtual networking event for women in tech across different roles and industries.
                   </p>
                 </motion.div>
                 
                 <motion.div 
                   whileHover={{ y: -3 }}
-                  className="border border-gray-200/30 rounded-lg p-4 hover:shadow-sm transition-shadow"
+                  className="border border-gray-200/30 rounded-lg p-3 sm:p-4 hover:shadow-sm transition-shadow"
                 >
                   <div className="bg-gradient-to-r from-blue-500 to-purple-500 h-1 w-full rounded-full mb-3"></div>
-                  <h3 className="font-medium text-gray-800">Technical Interview Workshop</h3>
-                  <div className="flex items-center text-sm text-gray-500 mt-1">
-                    <Calendar className="h-4 w-4 mr-2" />
+                  <h3 className="font-medium text-gray-800 text-sm sm:text-base">Technical Interview Workshop</h3>
+                  <div className="flex items-center text-xs sm:text-sm text-gray-500 mt-1">
+                    <Calendar className="h-3 w-3 sm:h-4 sm:w-4 mr-2" />
                     October 25, 2023 • 5:00 PM
                   </div>
-                  <p className="text-sm text-gray-600 mt-2">
+                  <p className="text-xs sm:text-sm text-gray-600 mt-2">
                     Learn effective strategies for technical interviews from experienced hiring managers.
                   </p>
                 </motion.div>

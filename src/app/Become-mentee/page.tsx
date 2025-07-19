@@ -69,8 +69,8 @@ const BecomeMentor: React.FC = () => {
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-transparent">
-        <div className="bg-white/10 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-white/20 text-center">
-          <div className="animate-pulse text-2xl font-medium text-white">Loading...</div>
+        <div className="bg-white/10 backdrop-blur-xl p-6 sm:p-8 rounded-xl sm:rounded-2xl shadow-lg border border-white/20 text-center">
+          <div className="animate-pulse text-lg sm:text-2xl font-medium text-white">Loading...</div>
         </div>
       </div>
     );
@@ -80,31 +80,32 @@ const BecomeMentor: React.FC = () => {
     <div className="min-h-screen relative overflow-hidden bg-transparent">
       {/* Vibrant background elements - now fully visible */}
       <div className="fixed inset-0 -z-20 overflow-hidden">
-        <div className="absolute -top-20 -left-20 w-[50rem] h-[50rem] bg-purple-400/20 rounded-full blur-3xl animate-float animation-delay-0"></div>
-        <div className="absolute top-1/3 right-0 w-[40rem] h-[40rem] bg-pink-400/20 rounded-full blur-3xl animate-float animation-delay-2000"></div>
-        <div className="absolute bottom-0 left-1/4 w-[50rem] h-[50rem] bg-blue-400/20 rounded-full blur-3xl animate-float animation-delay-4000"></div>
-        <div className="absolute top-2/3 left-1/2 w-[30rem] h-[30rem] bg-indigo-400/15 rounded-full blur-3xl animate-float animation-delay-6000"></div>
+        <div className="absolute -top-20 -left-20 w-[25rem] sm:w-[35rem] lg:w-[50rem] h-[25rem] sm:h-[35rem] lg:h-[50rem] bg-purple-400/20 rounded-full blur-3xl animate-float animation-delay-0"></div>
+        <div className="absolute top-1/3 right-0 w-[20rem] sm:w-[30rem] lg:w-[40rem] h-[20rem] sm:h-[30rem] lg:h-[40rem] bg-pink-400/20 rounded-full blur-3xl animate-float animation-delay-2000"></div>
+        <div className="absolute bottom-0 left-1/4 w-[25rem] sm:w-[35rem] lg:w-[50rem] h-[25rem] sm:h-[35rem] lg:h-[50rem] bg-blue-400/20 rounded-full blur-3xl animate-float animation-delay-4000"></div>
+        <div className="absolute top-2/3 left-1/2 w-[15rem] sm:w-[20rem] lg:w-[30rem] h-[15rem] sm:h-[20rem] lg:h-[30rem] bg-indigo-400/15 rounded-full blur-3xl animate-float animation-delay-6000"></div>
       </div>
 
       {/* Header with glass effect */}
       <header className="sticky top-0 z-10 backdrop-blur-md bg-white/10 border-b border-white/20 shadow-sm">
-        <div className="container mx-auto px-6 py-5 flex items-center justify-between">
+        <div className="container mx-auto px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between">
           <Button
             variant="ghost"
             size="lg"
-            className="gap-2 text-lg hover:bg-white/20 text-black"
+            className="gap-2 text-sm sm:text-lg hover:bg-white/20 text-black"
             onClick={() => router.push("/")}
           >
-            <ArrowLeft className="h-5 w-5" />
-            Back to Home
+            <ArrowLeft className="h-4 w-4 sm:h-5 sm:w-5" />
+            <span className="hidden sm:inline">Back to Home</span>
+            <span className="sm:hidden">Back</span>
           </Button>
-          <h1 className="text-3xl font-bold text-black mr-8" >Become a Mentee</h1>
-          <div className="w-24" />
+          <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-black text-center flex-1">Become a Mentee</h1>
+          <div className="w-16 sm:w-24" />
         </div>
       </header>
 
       {/* Main Content - Centered with premium glass effect */}
-      <main className="container mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
+      <main className="container mx-auto px-4 sm:px-6 py-8 sm:py-12 flex flex-col items-center justify-center min-h-[calc(100vh-80px)]">
         <AnimatePresence mode="wait">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -113,20 +114,20 @@ const BecomeMentor: React.FC = () => {
             transition={{ duration: 0.3 }}
             className="w-full max-w-4xl"
           >
-            <div className="text-center mb-12">
-              <div className="inline-block px-5 py-2.5 rounded-full bg-white/20 backdrop-blur-sm text-black text-lg font-medium mb-6 border border-white/30">
+            <div className="text-center mb-8 sm:mb-12">
+              <div className="inline-block px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-white/20 backdrop-blur-sm text-black text-sm sm:text-lg font-medium mb-4 sm:mb-6 border border-white/30">
                 Mentee Application
               </div>
-              <h1 className="text-5xl font-bold tracking-tight mb-4 text-black">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight mb-3 sm:mb-4 text-black leading-tight">
                 Gain Expertise
               </h1>
-              <p className="text-xl text-black/90 max-w-2xl mx-auto leading-relaxed">
+              <p className="text-base sm:text-lg lg:text-xl text-black/90 max-w-2xl mx-auto leading-relaxed px-4">
                Get Guidance from Women in Tech.
               </p>
             </div>
             
             {/* Ultra glass form container */}
-            <div className="bg-white/10 backdrop-blur-xl rounded-3xl p-10 border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.2)] hover:shadow-[0_12px_48px_rgba(0,0,0,0.3)] transition-all duration-500">
+            <div className="bg-white/10 backdrop-blur-xl rounded-2xl sm:rounded-3xl p-6 sm:p-8 lg:p-10 border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.2)] hover:shadow-[0_12px_48px_rgba(0,0,0,0.3)] transition-all duration-500">
               <MenteeForm onSubmit={handleSubmit} isSubmitting={isSubmitting} />
             </div>
           </motion.div>

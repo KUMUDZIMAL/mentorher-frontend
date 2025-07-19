@@ -15,11 +15,16 @@ import ContactUs from '@/myComponents/ContactUS';
 const Index = () => {   
   return (     
     // <NotificationProvider>
-      <div className="relative">
+      <div className="relative min-h-screen">
         {/* Navbar */}
         <Navbar />
-        <Gradient />
-        <AllComponents />
+        
+        {/* Main Content with proper spacing for fixed navbar */}
+        <main className="pt-16">
+          <Gradient />
+          <AllComponents />
+        </main>
+        
         <Footer />
       </div>
     /* </NotificationProvider> */
