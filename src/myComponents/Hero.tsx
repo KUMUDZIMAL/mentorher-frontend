@@ -79,8 +79,8 @@ const Hero = () => {
     }
   ];
   return (
-    <section className="relative w-full min-h-screen overflow-hidden flex items-center justify-center pt-16">
-      <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-24 flex flex-col">
+    <section className="relative w-full overflow-hidden flex items-center justify-center -mt-8">
+      <div className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 lg:py-24 flex flex-col">
         <div className="text-center mb-8 sm:mb-12 lg:mb-16">
           <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
             <span className="bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">

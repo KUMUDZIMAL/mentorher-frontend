@@ -76,7 +76,7 @@ export default function Navbar() {
   // Close mobile menu when screen size changes
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth >= 768) {
+      if (window.innerWidth >= 1024) {
         setIsMobileMenuOpen(false);
       }
     };
@@ -99,8 +99,19 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          {/* Medium screens menu button */}
+          <div className="hidden md:block lg:hidden">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-gray-700 hover:text-purple-600 transition-colors p-2"
+              aria-label="Toggle medium screen menu"
+            >
+              {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
+
+          {/* Desktop Navigation - Large screens and above (lg+) */}
+          <div className="hidden lg:flex items-center space-x-8">
             {/* Services Dropdown */}
             <div className="relative" ref={dropdownRef}>
               <button
@@ -177,8 +188,8 @@ export default function Navbar() {
             </Link>
           </div>
 
-          {/* Desktop Auth Options */}
-          <div className="hidden md:flex items-center space-x-6">
+          {/* Desktop Auth Options - Large screens only */}
+          <div className="hidden lg:flex items-center space-x-6">
             {!isLoading &&
               (user ? (
                 <button
@@ -207,7 +218,7 @@ export default function Navbar() {
               ))}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button - Small and medium screens */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
@@ -219,11 +230,11 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu */}
+        {/* Mobile Navigation Menu - Small and medium screens */}
         {isMobileMenuOpen && (
           <div 
             ref={mobileMenuRef}
-            className="md:hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg"
+            className="lg:hidden border-t border-gray-200 bg-white/95 backdrop-blur-lg"
           >
             <div className="px-2 pt-2 pb-3 space-y-1">
               {/* Mobile Services Section */}
