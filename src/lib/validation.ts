@@ -114,6 +114,7 @@ export const softSkillOptions = [
 ];
 
 export const industryOptions = [
+  "IT Industry",
   "Finance/Fintech",
   "Healthcare/Medtech",
   "E-commerce/Retail",
@@ -131,6 +132,7 @@ export const industryOptions = [
   "Telecommunications",
   "Manufacturing",
   "Consulting",
+  "Other"
 ];
 
 export const languageOptions = [
