@@ -48,6 +48,15 @@ const steps = [
   "Additional",
 ];
 
+// Fields for each step
+const stepFields: Array<Array<keyof MentorFormValues>> = [
+  ["fullName", "email", "phone", "profilePhoto"],
+  ["currentRole", "company", "yearsOfExperience", "education", "careerHistory"],
+  ["technicalSkills", "industrySpecialization", "softSkills"],
+  ["mentoringGoals", "mentoringStyle"],
+  ["linkedinUrl", "personalBio", "achievements", "languages", "areasOfInterest", "testimonials", "termsAgreed"]
+];
+
 export default function MentorForm({ onSubmit }: { onSubmit: (data: MentorFormValues) => Promise<void> }) {
   const [step, setStep] = useState(0);
   const [submitting, setSubmitting] = useState(false);
@@ -61,31 +70,44 @@ export default function MentorForm({ onSubmit }: { onSubmit: (data: MentorFormVa
 
   const { control, handleSubmit, trigger, formState } = form;
 
-  // Only validate the current step’s fields
+  // Navigate to next step after validating current step
   const goNext = async () => {
-    const fields: Array<keyof MentorFormValues> =
-      step === 0
-        ? ["fullName", "email", "phone", "profilePhoto"]
-        : step === 1
-        ? ["currentRole", "company", "yearsOfExperience", "education", "careerHistory"]
-        : step === 2
-        ? ["technicalSkills", "industrySpecialization", "softSkills"]
-        : step === 3
-        ? ["mentoringGoals", "mentoringStyle"]
-        : [];
-
-    const ok = await trigger(fields);
+    const fields = stepFields[step];
+    const ok = await trigger(fields, { shouldFocus: true });
     if (ok) setStep((s) => Math.min(s + 1, steps.length - 1));
   };
 
+  // Navigate to previous step
   const goBack = () => setStep((s) => Math.max(s - 1, 0));
 
   // Final submission handler
   const onSubmitForm: SubmitHandler<MentorFormValues> = async (data) => {
+    // Validate entire form before submission
+    const isValid = await trigger(undefined, { shouldFocus: true });
+    if (!isValid) {
+      // Find first error and jump to that step
+      const errorFields = Object.keys(formState.errors);
+      if (errorFields.length > 0) {
+        const firstError = errorFields[0] as keyof MentorFormValues;
+        for (let i = 0; i < stepFields.length; i++) {
+          if (stepFields[i].includes(firstError)) {
+            setStep(i);
+            return;
+          }
+        }
+      }
+      return;
+    }
+
     setSubmitting(true);
-    await onSubmit(data);
-    setSubmitting(false);
-    router.push("/mentor-dashboard");
+    try {
+      await onSubmit(data);
+      router.push("/mentor-dashboard");
+    } catch (error) {
+      console.error("Submission error:", error);
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -307,15 +329,29 @@ export default function MentorForm({ onSubmit }: { onSubmit: (data: MentorFormVa
 
         {/* Nav Buttons */}
         <div className="flex flex-col sm:flex-row justify-between gap-4">
-          <Button variant="outline" onClick={goBack} disabled={step === 0} className="w-full sm:w-40">
+          <Button 
+            variant="outline" 
+            onClick={goBack} 
+            disabled={step === 0} 
+            type="button"
+            className="w-full sm:w-40"
+          >
             Back
           </Button>
           {step < steps.length - 1 ? (
-            <Button onClick={goNext} className="w-full sm:w-40">
+            <Button 
+              onClick={goNext}
+              type="button"
+              className="w-full sm:w-40"
+            >
               Next
             </Button>
           ) : (
-            <Button type="submit" disabled={submitting} className="w-full sm:w-40 flex items-center justify-center gap-2">
+            <Button 
+              type="submit" 
+              disabled={submitting} 
+              className="w-full sm:w-40 flex items-center justify-center gap-2"
+            >
               {submitting && <Loader2 className="animate-spin" />} Submit
             </Button>
           )}

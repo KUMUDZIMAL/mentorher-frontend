@@ -53,7 +53,7 @@ const ProfileSidebar = () => {
   return (
     <div className="space-y-6">
       {/* Profile Activity */}
-      <Card className="overflow-hidden border-2 border-accent/30">
+      {/* <Card className="overflow-hidden border-2 border-accent/30">
         <CardContent className="p-5">
           <h3 className="font-medium text-lg mb-3">Profile Activity</h3>
           <div className="flex items-center gap-2 text-base text-foreground/80">
@@ -62,7 +62,7 @@ const ProfileSidebar = () => {
           </div>
         </CardContent>
       </Card>
-      
+       */}
       {/* Languages */}
       {languages.length > 0 && (
         <Card className="overflow-hidden border-2 border-accent/30">
