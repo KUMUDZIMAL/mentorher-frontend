@@ -65,7 +65,7 @@ const ProfileSidebar = () => {
        */}
       {/* Languages */}
       {languages.length > 0 && (
-        <Card className="overflow-hidden border-2 border-accent/30 relative top-20">
+        <Card className="overflow-hidden border-2 border-accent/30 relative top-13">
           <CardContent className="p-5">
             <h3 className="font-medium text-lg flex items-center gap-2 mb-3">
               <Languages className="h-5 w-5 text-primary/70" />
