@@ -178,6 +178,7 @@ const MentorForm: React.FC<MentorFormProps> = ({ onSubmit, isSSubmitting }) => {
     try {
       const response = await fetch("https://mentorher-backend.vercel.app/api/mentor", {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
