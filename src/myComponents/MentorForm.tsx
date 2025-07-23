@@ -176,7 +176,7 @@ const MentorForm: React.FC<MentorFormProps> = ({ onSubmit, isSSubmitting }) => {
   const onFormSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      const response = await fetch("/api/mentor", {
+      const response = await fetch("https://mentorher-backend.vercel.app/api/mentor", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
