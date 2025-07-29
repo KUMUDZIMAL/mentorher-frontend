@@ -1,6 +1,4 @@
-// components/Navbar.tsx
 "use client";
-
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,7 +14,10 @@ import {
   X,
 } from "lucide-react";
 
-// … your User interface …
+interface User {
+  _id: string;
+  // add any other user fields you need
+}
 
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
@@ -27,10 +28,9 @@ export default function Navbar() {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-
   const pathname = usePathname();
 
-  // Fetch current user on mount
+  // fetch user on mount
   useEffect(() => {
     (async () => {
       try {
@@ -48,12 +48,12 @@ export default function Navbar() {
     })();
   }, []);
 
-  // Clear the page loader when navigation finishes
+  // reset page loader on navigation
   useEffect(() => {
     if (isPageLoading) setIsPageLoading(false);
   }, [pathname]);
 
-  // Close dropdowns on outside click
+  // close dropdowns on outside click
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (
@@ -73,21 +73,19 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  // Universal link‐click handler
   const handleNavClick = () => {
     setIsPageLoading(true);
     setIsDropdownOpen(false);
     setIsMobileMenuOpen(false);
   };
 
-  // Logout handler
   const handleLogout = async () => {
     setIsAuthLoading(true);
     try {
-      await fetch("https://mentorher-backend.vercel.app/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      await fetch(
+        "https://mentorher-backend.vercel.app/api/auth/logout",
+        { method: "POST", credentials: "include" }
+      );
       setUser(null);
     } catch {
       /* ignore */
@@ -98,15 +96,13 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Page‑loader overlay (white + lavender spinner) */}
+      {/* page‐loader overlay */}
       {isPageLoading && (
-        <div
-          className="
-            fixed inset-x-0 top-16 bottom-0 z-40
-            bg-white bg-opacity-60
-            flex items-center justify-center
-          "
-        >
+        <div className="
+          fixed inset-x-0 top-16 bottom-0 z-40
+          bg-white bg-opacity-60
+          flex items-center justify-center
+        ">
           <div className="w-12 h-12 border-4 border-purple-300 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
@@ -248,9 +244,115 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div ref={mobileMenuRef} className="lg:hidden border-t bg-white/95 backdrop-blur-lg">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {/* … same mobile links with onClick={handleNavClick} … */}
+          <div
+            ref={mobileMenuRef}
+            className="lg:hidden border-t bg-white/95 backdrop-blur-lg"
+          >
+            <div className="px-4 pt-4 pb-6 space-y-2">
+              {/* Services submenu */}
+              <button
+                onClick={() => setIsDropdownOpen((o) => !o)}
+                className="w-full flex items-center justify-between px-3 py-2 text-gray-700 hover:text-purple-600"
+              >
+                <span className="flex items-center gap-2">
+                  <BookOpen size={18} />
+                  Services
+                </span>
+                <ChevronDown
+                  size={16}
+                  className={`transition-transform ${
+                    isDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </button>
+              {isDropdownOpen && (
+                <div className="pl-8 flex flex-col space-y-1">
+                  <Link
+                    href="/Become-mentee"
+                    onClick={handleNavClick}
+                    className="py-1 text-gray-600 hover:text-purple-600"
+                  >
+                    Become a Mentee
+                  </Link>
+                  <Link
+                    href="/BecomeMentor"
+                    onClick={handleNavClick}
+                    className="py-1 text-gray-600 hover:text-purple-600"
+                  >
+                    Become a Mentor
+                  </Link>
+                  <Link
+                    href="/chatbot"
+                    onClick={handleNavClick}
+                    className="py-1 text-gray-600 hover:text-purple-600"
+                  >
+                    Career Path Generator
+                  </Link>
+                  {user && (
+                    <Link
+                      href={`/recommendations?userId=${user._id}`}
+                      onClick={handleNavClick}
+                      className="py-1 text-gray-600 hover:text-purple-600"
+                    >
+                      Recommend Mentors
+                    </Link>
+                  )}
+                </div>
+              )}
+
+              {/* Community */}
+              <Link
+                href="/forum"
+                onClick={handleNavClick}
+                className="block px-3 py-2 text-gray-700 hover:text-purple-600"
+              >
+                <Users size={18} className="inline-block mr-2" />
+                Community
+              </Link>
+
+              {/* Dashboard */}
+              <Link
+                href="/mentee-dashboard"
+                onClick={handleNavClick}
+                className="block px-3 py-2 text-gray-700 hover:text-purple-600"
+              >
+                <Calendar size={18} className="inline-block mr-2" />
+                Dashboard
+              </Link>
+
+              {/* Auth */}
+              {user ? (
+                <button
+                  onClick={handleLogout}
+                  disabled={isAuthLoading}
+                  className="w-full text-left px-3 py-2 text-gray-700 hover:text-purple-600"
+                >
+                  {isAuthLoading ? (
+                    <span className="inline-block w-5 h-5 border-2 border-purple-300 border-t-transparent rounded-full animate-spin" />
+                  ) : (
+                    "Logout"
+                  )}
+                </button>
+              ) : (
+                <>
+                  <Link
+                    href="/auth/login"
+                    onClick={handleNavClick}
+                    className="block px-3 py-2 text-gray-700 hover:text-purple-600"
+                  >
+                    <LogIn size={18} className="inline-block mr-2" />
+                    Login
+                  </Link>
+                  <Link
+                    href="/auth/register"
+                    onClick={handleNavClick}
+                    className="block px-3 py-2 bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full text-center"
+                  >
+                    <UserPlus size={18} className="inline-block mr-2" />
+                    Register
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}
