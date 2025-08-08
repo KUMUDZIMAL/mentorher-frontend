@@ -247,13 +247,118 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Menu */}
-        {isMobileMenuOpen && (
-          <div ref={mobileMenuRef} className="lg:hidden border-t bg-white/95 backdrop-blur-lg">
-            <div className="px-2 pt-2 pb-3 space-y-1">
-              {/* … same mobile links with onClick={handleNavClick} … */}
-            </div>
-          </div>
-        )}
+ {/* Mobile Menu */}
+{isMobileMenuOpen && (
+  <div
+    ref={mobileMenuRef}
+    className="lg:hidden border-t bg-white/95 backdrop-blur-lg"
+  >
+    <div className="px-2 pt-2 pb-3 space-y-1">
+      {/* Services section */}
+      <div>
+        <p className="flex items-center gap-1 font-medium text-gray-700">
+          <BookOpen size={18} />
+          Services
+        </p>
+        <div className="ml-6 mt-1 space-y-1">
+          <Link
+            href="/Become-mentee"
+            onClick={handleNavClick}
+            className="block text-gray-700 hover:bg-gray-100 px-3 py-1 rounded"
+          >
+            Become a Mentee
+          </Link>
+          <Link
+            href="/BecomeMentor"
+            onClick={handleNavClick}
+            className="block text-gray-700 hover:bg-gray-100 px-3 py-1 rounded"
+          >
+            Become a Mentor
+          </Link>
+          <Link
+            href="/chatbot"
+            onClick={handleNavClick}
+            className="block text-gray-700 hover:bg-gray-100 px-3 py-1 rounded"
+          >
+            Career Path Generator
+          </Link>
+          {user && (
+            <Link
+              href={`/recommendations?userId=${user._id}`}
+              onClick={handleNavClick}
+              className="block text-gray-700 hover:bg-gray-100 px-3 py-1 rounded"
+            >
+              Recommend Mentors
+            </Link>
+          )}
+          {user && (
+            <Link
+              href="/room"
+              onClick={handleNavClick}
+              className="block text-gray-700 hover:bg-gray-100 px-3 py-1 rounded"
+            >
+              Video Call
+            </Link>
+          )}
+        </div>
+      </div>
+
+      {/* Other links */}
+      <Link
+        href="/forum"
+        onClick={handleNavClick}
+        className="flex items-center gap-1 text-gray-700 hover:text-purple-600 px-3 py-2 rounded"
+      >
+        <Users size={18} />
+        Community
+      </Link>
+
+      <Link
+        href="/mentee-dashboard"
+        onClick={handleNavClick}
+        className="flex items-center gap-1 text-gray-700 hover:text-purple-600 px-3 py-2 rounded"
+      >
+        <Calendar size={18} />
+        Dashboard
+      </Link>
+
+      {/* Auth buttons */}
+      {user ? (
+        <button
+          onClick={handleLogout}
+          disabled={isAuthLoading}
+          className="text-gray-700 hover:text-purple-600 px-3 py-2 rounded"
+        >
+          {isAuthLoading ? (
+            <span className="inline-block w-5 h-5 border-2 border-purple-300 border-t-transparent rounded-full animate-spin" />
+          ) : (
+            "Logout"
+          )}
+        </button>
+      ) : (
+        <>
+          <Link
+            href="/auth/login"
+            onClick={handleNavClick}
+            className="flex items-center gap-1 text-gray-700 hover:text-purple-600 px-3 py-2 rounded"
+          >
+            <LogIn size={18} />
+            Login
+          </Link>
+          <Link
+            href="/auth/register"
+            onClick={handleNavClick}
+            className="flex items-center gap-1 bg-gradient-to-r from-pink-500 to-purple-600 text-white px-4 py-1 rounded-full"
+          >
+            <UserPlus size={18} />
+            Register
+          </Link>
+        </>
+      )}
+    </div>
+  </div>
+)}
+
       </nav>
     </>
   );
