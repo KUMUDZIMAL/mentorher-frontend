@@ -80,7 +80,7 @@ export default function ChatbotPage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/chatbot", {
+      const res = await fetch("https://mentorher-backend.vercel.app/api/chatbot", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
