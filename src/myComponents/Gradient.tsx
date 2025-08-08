@@ -23,7 +23,7 @@ export default function Gradient() {
         </div>
         
         {/* Right: Spline Model */}
-        <div className="hidden lg:block lg:max-w-[550px] lg:h-[550px] flex-shrink-0 -mt-16">
+        <div className="hidden lg:block lg:max-w-[550px] lg:h-[550px] flex-shrink-0 -mt-16 mr-7">
           <Spline
             scene="https://prod.spline.design/pq3ogkFieEA2QGd2/scene.splinecode" 
           />

@@ -1,6 +1,4 @@
-// components/Navbar.tsx
 "use client";
-
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -16,7 +14,10 @@ import {
   X,
 } from "lucide-react";
 
-// … your User interface …
+interface User {
+  _id: string;
+  // add any other user fields you need
+}
 
 export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
@@ -27,10 +28,9 @@ export default function Navbar() {
 
   const dropdownRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
-
   const pathname = usePathname();
 
-  // Fetch current user on mount
+  // fetch user on mount
   useEffect(() => {
     (async () => {
       try {
@@ -48,12 +48,12 @@ export default function Navbar() {
     })();
   }, []);
 
-  // Clear the page loader when navigation finishes
+  // reset page loader on navigation
   useEffect(() => {
     if (isPageLoading) setIsPageLoading(false);
   }, [pathname]);
 
-  // Close dropdowns on outside click
+  // close dropdowns on outside click
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
       if (
@@ -73,21 +73,19 @@ export default function Navbar() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  // Universal link‐click handler
   const handleNavClick = () => {
     setIsPageLoading(true);
     setIsDropdownOpen(false);
     setIsMobileMenuOpen(false);
   };
 
-  // Logout handler
   const handleLogout = async () => {
     setIsAuthLoading(true);
     try {
-      await fetch("https://mentorher-backend.vercel.app/api/auth/logout", {
-        method: "POST",
-        credentials: "include",
-      });
+      await fetch(
+        "https://mentorher-backend.vercel.app/api/auth/logout",
+        { method: "POST", credentials: "include" }
+      );
       setUser(null);
     } catch {
       /* ignore */
@@ -98,15 +96,13 @@ export default function Navbar() {
 
   return (
     <>
-      {/* Page‑loader overlay (white + lavender spinner) */}
+      {/* page‐loader overlay */}
       {isPageLoading && (
-        <div
-          className="
-            fixed inset-x-0 top-16 bottom-0 z-40
-            bg-white bg-opacity-60
-            flex items-center justify-center
-          "
-        >
+        <div className="
+          fixed inset-x-0 top-16 bottom-0 z-40
+          bg-white bg-opacity-60
+          flex items-center justify-center
+        ">
           <div className="w-12 h-12 border-4 border-purple-300 border-t-transparent rounded-full animate-spin" />
         </div>
       )}
