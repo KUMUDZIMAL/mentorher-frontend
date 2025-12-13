@@ -98,10 +98,5 @@
   },
   "optionalDependencies": {
     "@tailwindcss/oxide-linux-x64-gnu": "^4.0.17"
-  },
-  "overrides": {
-    "react-server-dom-webpack": "^19.0.1",
-    "react-server-dom-parcel": "^19.0.1",
-    "react-server-dom-turbopack": "^19.0.1"
   }
 }
