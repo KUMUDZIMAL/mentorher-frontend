@@ -4,7 +4,6 @@ import Navbar from '@/myComponents/Navbar';
 import Footer from '@/myComponents/Footer'; 
 import { FAQAccordion } from '@/myComponents/FAQaccordion';  
 import EventsCalendar from '@/myComponents/EventsCalendar'; 
-import AICareerPathGenerator from '@/myComponents/AICareerPathGenerator'; 
 import AllComponents from '@/myComponents/Allcompnents'; 
 import { NotificationProvider } from '../myComponents/Notification/NotificationContext'; 
 import { SendNotification } from '../myComponents/Notification/SendNotification'; 

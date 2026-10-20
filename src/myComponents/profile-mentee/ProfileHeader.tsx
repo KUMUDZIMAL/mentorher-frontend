@@ -1,10 +1,14 @@
 "use client";
+import { API_BASE } from "@/lib/api";
 
 import React, { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Pencil, MessageCircle, BriefcaseBusiness, Award, MapPin, Link2 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import Loader from "@/components/Loader";
+import EmptyState from "@/components/EmptyState";
+import { AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 interface MentorData {
@@ -28,7 +32,7 @@ const ProfileHeader: React.FC = () => {
   useEffect(() => {
     const fetchMentorData = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata",{  credentials: "include",});
+        const res = await fetch(`${API_BASE}/api/auth/menteedata`,{  credentials: "include",});
         const result = await res.json();
         if (!res.ok) {
           setError(result.error || "Failed to load profile data");
@@ -46,9 +50,9 @@ const ProfileHeader: React.FC = () => {
     fetchMentorData();
   }, []);
 
-  if (loading) return <div>Loading profile...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!mentor) return <div>No profile data found.</div>;
+  if (loading) return <Loader size="lg" label="Loading profile..." />;
+  if (error) return <EmptyState icon={AlertTriangle} title="Could not load profile" description={error} />;
+  if (!mentor) return <EmptyState title="No profile data found" description="Complete your mentee profile to see it here." />;
 
   const {
     fullName,
@@ -56,7 +60,6 @@ const ProfileHeader: React.FC = () => {
     currentRole,
     company,
     location,
-    connectionCount = 0,
     headline,
     linkedinUrl,
     verified = false,
@@ -146,11 +149,6 @@ const ProfileHeader: React.FC = () => {
             )}
           </div>
           
-          <div className="mt-3 text-sm">
-            <span className="font-medium text-foreground/80">{connectionCount}+ connections</span>
-          </div>
-
-          {/* Action Buttons */}
           <div className="flex gap-3 mt-6">
             <Button className="gap-2 rounded-full px-6">
               <MessageCircle className="h-4 w-4" />

@@ -1,68 +1,27 @@
 "use client";
-import { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, Users, Medal, GraduationCap, Languages, ArrowUpRight } from "lucide-react";
+import { Users, Medal, GraduationCap, Languages, ArrowUpRight } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-interface MentorData {
-  languages: string[];
+interface ProfileSidebarProps {
+  languages?: string[];
   achievements?: string[];
   mentorshipExperience?: string;
-  profileViewCount?: number;
   education?: string;
 }
 
-const ProfileSidebar = () => {
-  const [mentorData, setMentorData] = useState<MentorData | null>(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchMentorData = async () => {
-      try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/mentordata",{  credentials: "include",});
-        if (!res.ok) {
-          throw new Error("Failed to fetch mentor data");
-        }
-        const json = await res.json();
-        const data = json.data;
-        // Map fetched data to the MentorData interface
-        const mappedData: MentorData = {
-          languages: data.languages || [],
-          achievements: data.achievements ? [data.achievements] : [], // if achievements is a string
-          mentorshipExperience: data.mentorshipExperience || "",
-          profileViewCount: data.profileViewCount || 0, // default to 0 if not provided
-          education: data.education || ""
-        };
-        setMentorData(mappedData);
-      } catch (error) {
-        console.error("Error fetching mentor data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMentorData();
-  }, []);
-
-  if (loading) return <div>Loading sidebar...</div>;
-  if (!mentorData) return <div>No mentor data found</div>;
-
-  const { languages, achievements = [], mentorshipExperience, profileViewCount = 0, education } = mentorData;
+const ProfileSidebar = ({
+  languages = [],
+  achievements = [],
+  mentorshipExperience,
+  education,
+}: ProfileSidebarProps) => {
+  const router = useRouter();
 
   return (
     <div className="space-y-6">
-      {/* Profile Activity */}
-      {/* <Card className="overflow-hidden border-2 border-accent/30">
-        <CardContent className="p-5">
-          <h3 className="font-medium text-lg mb-3">Profile Activity</h3>
-          <div className="flex items-center gap-2 text-base text-foreground/80">
-            <Eye className="h-5 w-5 text-primary/70" />
-            <span>{profileViewCount} profile views</span>
-          </div>
-        </CardContent>
-      </Card>
-       */}
       {/* Languages */}
       {languages.length > 0 && (
         <Card className="overflow-hidden border-2 border-accent/30 relative top-13">
@@ -72,7 +31,7 @@ const ProfileSidebar = () => {
               Languages
             </h3>
             <div className="flex flex-wrap gap-2">
-              {languages.map(language => (
+              {languages.map((language) => (
                 <Badge
                   key={language}
                   className="px-3 py-1.5 text-sm bg-accent/20 border-accent/20 text-foreground rounded-full"
@@ -84,7 +43,7 @@ const ProfileSidebar = () => {
           </CardContent>
         </Card>
       )}
-      
+
       {/* Education */}
       {education && (
         <Card className="overflow-hidden border-2 border-accent/30">
@@ -97,7 +56,7 @@ const ProfileSidebar = () => {
           </CardContent>
         </Card>
       )}
-      
+
       {/* Achievements */}
       {achievements.length > 0 && (
         <Card className="overflow-hidden border-2 border-accent/30">
@@ -117,7 +76,7 @@ const ProfileSidebar = () => {
           </CardContent>
         </Card>
       )}
-      
+
       {/* Mentorship Experience */}
       {mentorshipExperience && (
         <Card className="overflow-hidden border-2 border-accent/30">
@@ -130,7 +89,7 @@ const ProfileSidebar = () => {
           </CardContent>
         </Card>
       )}
-      
+
       {/* Call to Action */}
       <Card className="overflow-hidden border-2 border-primary/20 bg-primary/5">
         <CardContent className="p-5">
@@ -138,9 +97,12 @@ const ProfileSidebar = () => {
           <p className="text-base text-foreground/80 mb-4">
             Connect with other mentors and mentees in the Women in Tech community
           </p>
-          <Button className="w-full rounded-full flex items-center gap-2 py-5 text-base">
+          <Button
+            className="w-full rounded-full flex items-center gap-2 py-5 text-base"
+            onClick={() => router.push("/forum")}
+          >
             Join Community
-            <ArrowUpRight className="h-4 w-4" />  
+            <ArrowUpRight className="h-4 w-4" />
           </Button>
         </CardContent>
       </Card>

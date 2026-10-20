@@ -1,127 +1,98 @@
-"use client"
+"use client";
 
-import { ArrowRight } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import Image from "next/image"
-import Navbar from "../Navbar"
-import Footer from "../Footer"
+import { useCallback, useEffect, useState } from "react";
+import { ArrowRight, AlertTriangle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import Navbar from "../Navbar";
+import Footer from "../Footer";
+import Loader from "@/components/Loader";
+import EmptyState from "@/components/EmptyState";
+import { apiFetch, errorMessage } from "@/lib/api";
 
-interface MentorCardProps {
-  name: string
-  role: string
-  company: string
-  expertise: string[]
-  isAvailable: boolean
-  rating: number
-  imageUrl: string
-  calendarLink: string
-  delay?: number
+interface Mentor {
+  userId: string;
+  fullName: string;
+  profilePhoto?: string;
+  currentRole?: string;
+  company?: string;
+  technicalSkills?: string[];
+  areasOfInterest?: string[];
+  availability?: { day?: string; startTime?: string; endTime?: string }[];
 }
 
-function MentorCard(props: MentorCardProps) {
+function MentorCard({ mentor }: { mentor: Mentor }) {
+  const expertise = [...(mentor.technicalSkills ?? []), ...(mentor.areasOfInterest ?? [])];
+  const isAvailable = (mentor.availability?.length ?? 0) > 0;
+  const initials = mentor.fullName
+    .split(" ")
+    .map((part) => part[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
     <div className="border border-white/30 rounded-xl p-6 shadow-xl hover:shadow-2xl transition-all duration-500 bg-white/25 backdrop-blur-xl hover:bg-white/35 hover:scale-[1.03] group">
-      <div className="w-full h-56 relative mb-5 rounded-lg overflow-hidden shadow-inner">
-        <Image
-          src={props.imageUrl || "/mentors/default.jpg"}
-          alt={props.name}
-          fill
-          className="object-cover transition-transform duration-700 group-hover:scale-105"
-        />
+      <div className="w-full h-56 relative mb-5 rounded-lg overflow-hidden shadow-inner bg-white/50 flex items-center justify-center">
+        {mentor.profilePhoto ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={mentor.profilePhoto}
+            alt={mentor.fullName}
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+        ) : (
+          <span className="text-5xl font-bold text-purple-500/70">{initials}</span>
+        )}
       </div>
-      <h3 className="text-xl font-semibold text-center">{props.name}</h3>
+      <h3 className="text-xl font-semibold text-center">{mentor.fullName}</h3>
       <p className="text-center text-sm mt-1">
-        {props.role} @ {props.company}
+        {mentor.currentRole || "Mentor"}
+        {mentor.company ? ` @ ${mentor.company}` : ""}
       </p>
       <div className="my-3 p-2 rounded-lg bg-white/30 backdrop-blur-md">
-        <p className="text-center text-xs text-gray-700">Expertise: {props.expertise.join(", ")}</p>
-      </div>
-      <div className="flex justify-between items-center mb-4 px-2">
-        <p
-          className={`${props.isAvailable ? "text-green-600 bg-green-100/70" : "text-red-500 bg-red-100/70"} px-3 py-1 rounded-full text-sm backdrop-blur-sm`}
-        >
-          {props.isAvailable ? "Available" : "Not Available"}
+        <p className="text-center text-xs text-gray-700">
+          {expertise.length > 0 ? `Expertise: ${expertise.slice(0, 4).join(", ")}` : "Skills not listed yet"}
         </p>
-        <p className="text-yellow-600 bg-yellow-100/70 px-3 py-1 rounded-full text-sm backdrop-blur-sm">
-          ⭐ {props.rating}
+      </div>
+      <div className="flex justify-center mb-4 px-2">
+        <p
+          className={`${isAvailable ? "text-green-600 bg-green-100/70" : "text-gray-500 bg-gray-100/70"} px-3 py-1 rounded-full text-sm backdrop-blur-sm`}
+        >
+          {isAvailable ? "Available for sessions" : "Availability not set"}
         </p>
       </div>
       <a
-        href={props.calendarLink}
-        target="_blank"
-        rel="noopener noreferrer"
+        href={`/profile/mentor/${mentor.userId}`}
         className="block text-center bg-purple-600/80 text-white py-3 rounded-lg hover:bg-purple-700 transition-all duration-300 shadow-md hover:shadow-lg backdrop-blur-sm"
       >
-        Schedule
+        View Profile &amp; Schedule
       </a>
     </div>
-  )
+  );
 }
 
-const mentors = [
-  {
-    name: "Sarah Johnson",
-    role: "Senior Developer",
-    company: "Google",
-    expertise: ["React", "TypeScript", "Node.js"],
-    isAvailable: true,
-    rating: 4.8,
-    imageUrl: "/mentors/sarah.png",
-    calendarLink: "https://calendar.google.com/",
-  },
-  {
-    name: "Emily Carter",
-    role: "UX Designer",
-    company: "Airbnb",
-    expertise: ["Figma", "UI/UX", "Design Thinking"],
-    isAvailable: true,
-    rating: 4.9,
-    imageUrl: "/mentors/emily.png",
-    calendarLink: "https://calendar.google.com/",
-  },
-  {
-    name: "Michael Lee",
-    role: "Data Scientist",
-    company: "Facebook",
-    expertise: ["Python", "TensorFlow", "Machine Learning"],
-    isAvailable: false,
-    rating: 4.6,
-    imageUrl: "/mentors/micheal.png",
-    calendarLink: "https://calendar.google.com/",
-  },
-  {
-    name: "David Kim",
-    role: "DevOps Engineer",
-    company: "Amazon",
-    expertise: ["AWS", "Docker", "Kubernetes"],
-    isAvailable: true,
-    rating: 4.7,
-    imageUrl: "/mentors/david.png",
-    calendarLink: "https://calendar.google.com/",
-  },
-  {
-    name: "Sophia Brown",
-    role: "Product Manager",
-    company: "Netflix",
-    expertise: ["Agile", "Product Strategy", "JIRA"],
-    isAvailable: false,
-    rating: 4.5,
-    imageUrl: "/mentors/sophia.png",
-    calendarLink: "https://calendar.google.com/",
-  },
-  {
-    name: "James Wilson",
-    role: "Cybersecurity Specialist",
-    company: "IBM",
-    expertise: ["Cybersecurity", "Network Security", "Penetration Testing"],
-    isAvailable: true,
-    rating: 4.8,
-    imageUrl: "/mentors/james.png",
-    calendarLink: "https://calendar.google.com/",
-  },
-]
-
 export default function SchedulerPage() {
+  const [mentors, setMentors] = useState<Mentor[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  const loadMentors = useCallback(async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const json = await apiFetch<{ success: boolean; mentors?: Mentor[] }>("/api/mentors");
+      setMentors(json.mentors ?? []);
+    } catch (err) {
+      setError(errorMessage(err));
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadMentors();
+  }, [loadMentors]);
+
   return (
     <div className="scheduler-container min-h-screen relative overflow-hidden">
       {/* Animated background with more visible soft blurred circles */}
@@ -147,7 +118,10 @@ export default function SchedulerPage() {
               your tech journey.
             </p>
             <div className="flex justify-center">
-              <Button className="bg-purple-600/90 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm px-6 py-6">
+              <Button
+                className="bg-purple-600/90 hover:bg-purple-700 text-white shadow-lg hover:shadow-xl transition-all duration-300 backdrop-blur-sm px-6 py-6"
+                onClick={() => document.getElementById("mentors-grid")?.scrollIntoView({ behavior: "smooth" })}
+              >
                 Browse All Mentors <ArrowRight size={18} className="ml-2" />
               </Button>
             </div>
@@ -156,19 +130,43 @@ export default function SchedulerPage() {
       </section>
 
       {/* Mentors Grid Section */}
-      <section className="relative px-4 pb-24">
+      <section id="mentors-grid" className="relative px-4 pb-24">
         <div className="max-w-7xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold mb-10 text-center">Our Featured Mentors</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-            {mentors.map((mentor, index) => (
-              <MentorCard key={index} {...mentor} />
-            ))}
-          </div>
+
+          {loading && <Loader size="lg" label="Loading mentors..." />}
+
+          {!loading && error && (
+            <EmptyState
+              icon={AlertTriangle}
+              title="Could not load mentors"
+              description={error}
+              action={
+                <Button onClick={loadMentors} className="bg-purple-600 text-white hover:bg-purple-700">
+                  Try again
+                </Button>
+              }
+            />
+          )}
+
+          {!loading && !error && mentors.length === 0 && (
+            <EmptyState
+              title="No mentors yet"
+              description="No mentor profiles have been created. Check back soon."
+            />
+          )}
+
+          {!loading && !error && mentors.length > 0 && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {mentors.map((mentor) => (
+                <MentorCard key={mentor.userId} mentor={mentor} />
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       <Footer />
     </div>
-  )
+  );
 }
-

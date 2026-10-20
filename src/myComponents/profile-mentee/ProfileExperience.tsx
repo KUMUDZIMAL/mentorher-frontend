@@ -1,10 +1,14 @@
 "use client";
+import { API_BASE } from "@/lib/api";
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Pencil, Plus, Building2, BriefcaseBusiness, Clock } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
+import Loader from "@/components/Loader";
+import EmptyState from "@/components/EmptyState";
+import { AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
 export interface Experience {
@@ -30,7 +34,7 @@ const ProfileExperience: React.FC = () => {
   useEffect(() => {
     const fetchMenteeData = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata",{  credentials: "include",});
+        const res = await fetch(`${API_BASE}/api/auth/menteedata`,{  credentials: "include",});
         const result = await res.json();
 
         if (!res.ok) {
@@ -59,8 +63,8 @@ const ProfileExperience: React.FC = () => {
     toast.success(`Edit experience ${id} functionality coming soon!`);
   };
 
-  if (loading) return <div>Loading experiences...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <Loader size="lg" label="Loading experience..." />;
+  if (error) return <EmptyState icon={AlertTriangle} title="Could not load experience" description={error} />;
 
   return (
     <Card className="mb-6 border-2 border-accent/30 overflow-hidden">

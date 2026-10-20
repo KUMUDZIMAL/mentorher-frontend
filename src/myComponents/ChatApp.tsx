@@ -1,6 +1,8 @@
 "use client";
-import React, { useEffect, useState, KeyboardEvent } from "react";
+import { API_BASE } from "@/lib/api";
+import React, { useEffect, useRef, useState, KeyboardEvent } from "react";
 import Navbar from "./Navbar";
+import { useAuth } from "@/lib/AuthContext";
 
 interface Message {
   _id: string;
@@ -18,6 +20,8 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
+  const listRef = useRef<HTMLDivElement>(null);
 
   // Fetch messages on mount and when groupId or receiverId changes
   useEffect(() => {
@@ -25,15 +29,15 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
       try {
         let url = "";
         if (groupId) {
-          url = `https://mentorher-backend.vercel.app/api/messages?groupId=${groupId}`;
+          url = `${API_BASE}/api/messages?groupId=${groupId}`;
         } else if (receiverId) {
-          url = `https://mentorher-backend.vercel.app/api/messages?receiverId=${receiverId}`;
+          url = `${API_BASE}/api/messages?receiverId=${receiverId}`;
         } else {
           setError("No receiverId or groupId provided");
           return;
         }
 
-        const res = await fetch(url,{  credentials: "include",});
+        const res = await fetch(url, { credentials: "include" });
         const data = await res.json();
 
         if (data.messages && Array.isArray(data.messages)) {
@@ -58,6 +62,11 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
     return () => clearInterval(intervalId); // Clean up interval on unmount
   }, [groupId, receiverId]);
 
+  // Keep the newest message in view
+  useEffect(() => {
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight });
+  }, [messages]);
+
   // Function to send a new message
   const handleSendMessage = async () => {
     if (!newMessage.trim()) return; // Prevent sending empty messages
@@ -75,12 +84,11 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
         return;
       }
 
-      const res = await fetch("https://mentorher-backend.vercel.app/api/messages", {
+      const res = await fetch(`${API_BASE}/api/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
-         credentials: "include",
-
+        credentials: "include",
       });
 
       const data = await res.json();
@@ -109,16 +117,44 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
       <Navbar></Navbar>
       {error && <p className="text-red-500 mb-2 mt-10">{error}</p>}
       {/* Messages List */}
-      <div className="message-list border rounded p-2 mb-4 h-64 overflow-y-auto ">
+      <div
+        ref={listRef}
+        className="message-list border rounded p-3 mb-4 h-72 overflow-y-auto bg-white/60 backdrop-blur-md"
+      >
         {messages.length > 0 ? (
-          messages.map((msg) => (
-            <div key={msg._id} className="message mb-2 p-2 rounded bg-gray-100">
-              <p>{msg.content}</p>
-              <small>{new Date(msg.createdAt).toLocaleTimeString()}</small>
-            </div>
-          ))
+          messages.map((msg) => {
+            const isOwn = Boolean(user?._id && String(msg.sender) === String(user._id));
+            return (
+              <div
+                key={msg._id}
+                className={`message mb-2 flex ${isOwn ? "justify-end" : "justify-start"}`}
+              >
+                <div
+                  className={`max-w-[75%] px-3 py-2 rounded-2xl text-sm ${
+                    isOwn
+                      ? "bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 text-white rounded-br-sm"
+                      : "bg-gray-100 text-gray-900 rounded-bl-sm"
+                  }`}
+                >
+                  <p className="whitespace-pre-wrap break-words">{msg.content}</p>
+                  <small
+                    className={`block text-[10px] mt-1 ${
+                      isOwn ? "text-white/80" : "text-gray-500"
+                    }`}
+                  >
+                    {new Date(msg.createdAt).toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </small>
+                </div>
+              </div>
+            );
+          })
         ) : (
-          <p>No messages yet.</p>
+          <p className="text-sm text-gray-500 text-center mt-8">
+            No messages yet. Say hi!
+          </p>
         )}
       </div>
 
@@ -134,7 +170,7 @@ const ChatApp: React.FC<ChatAppProps> = ({ groupId, receiverId }) => {
         />
         <button
           onClick={handleSendMessage}
-          className="ml-2 p-2 bg-blue-500 text-white rounded"
+          className="ml-2 px-4 bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 text-white rounded"
         >
           Send
         </button>

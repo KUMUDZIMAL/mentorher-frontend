@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE } from "@/lib/api";
 
 import { useState } from "react";
 import { useForm } from "react-hook-form";
@@ -176,7 +177,7 @@ const MentorForm: React.FC<MentorFormProps> = ({ onSubmit, isSSubmitting }) => {
   const onFormSubmit = async (data: any) => {
     setIsSubmitting(true);
     try {
-      const response = await fetch("https://mentorher-backend.vercel.app/api/mentor", {
+      const response = await fetch(`${API_BASE}/api/mentor`, {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
@@ -366,17 +367,17 @@ const MentorForm: React.FC<MentorFormProps> = ({ onSubmit, isSSubmitting }) => {
                 name="technicalSkills"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Technical Skills</FormLabel>
+                    <FormLabel>Skills</FormLabel>
                     <FormControl>
                       <MultiSelect
                         options={technicalSkillOptions}
                         selected={field.value || []}
                         onChange={field.onChange}
-                        placeholder="Select technical skills"
+                        placeholder="Select skills"
                       />
                     </FormControl>
                     <FormDescription>
-                      Select the technical skills you're proficient in
+                      Select the skills you're proficient in
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

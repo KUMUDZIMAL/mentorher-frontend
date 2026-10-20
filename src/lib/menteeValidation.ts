@@ -20,7 +20,7 @@ export const menteeFormSchema = z.object({
 
   // Technical Background
   technicalBackground: z.string().nonempty("Technical background is required"),
-  technicalSkills: z.array(z.string()).min(1, "At least one technical skill is required"),
+  technicalSkills: z.array(z.string()).min(1, "At least one skill is required"),
 
   // Mentorship Preferences
   mentorshipGoals: z.string().nonempty("Mentorship goals are required"),
@@ -92,8 +92,8 @@ export const mentorshipAreaOptions = [
 
 export const currentStatusOptions = [
   { value: "student", label: "Student" },
-  { value: "employed", label: "Employed in Tech" },
-  { value: "career_transition", label: "Transitioning to Tech" },
+  { value: "employed", label: "Employed" },
+  { value: "career_transition", label: "Changing Careers" },
   { value: "unemployed", label: "Looking for Opportunities" },
 ];
 

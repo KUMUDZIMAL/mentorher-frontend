@@ -1,9 +1,12 @@
 "use client";
+import { API_BASE } from "@/lib/api";
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Pencil, Sparkles, GraduationCap, Users, Clock } from "lucide-react";
+import { Pencil, Sparkles, GraduationCap, Users, Clock, AlertTriangle } from "lucide-react";
+import Loader from "@/components/Loader";
+import EmptyState from "@/components/EmptyState";
 import { toast } from "sonner";
 
 export interface MentorshipInfo {
@@ -20,7 +23,7 @@ const ProfileMentorship: React.FC = () => {
   useEffect(() => {
     const fetchMenteeData = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata",{  credentials: "include",});
+        const res = await fetch(`${API_BASE}/api/auth/menteedata`,{  credentials: "include",});
         if (!res.ok) {
           throw new Error("Failed to load profile data");
         }
@@ -49,15 +52,15 @@ const ProfileMentorship: React.FC = () => {
   };
 
   if (loading) {
-    return <div>Loading mentorship info...</div>;
+    return <Loader size="lg" label="Loading mentorship info..." />;
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <EmptyState icon={AlertTriangle} title="Could not load mentorship info" description={error} />;
   }
 
   if (!mentorship) {
-    return <div>No mentorship information available.</div>;
+    return <EmptyState title="No mentorship information yet" />;
   }
 
   const { careerGoals, mentorshipGoals, challenges } = mentorship;

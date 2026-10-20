@@ -325,7 +325,7 @@ const MenteeForm = ({ onSubmit, isSubmitting }: MenteeFormProps) => {
               name="technicalSkills"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Technical Skills (Optional)</FormLabel>
+                  <FormLabel>Skills (Optional)</FormLabel>
                   <FormControl>
                     <MultiSelect
                       placeholder="Select your skills"
@@ -335,7 +335,7 @@ const MenteeForm = ({ onSubmit, isSubmitting }: MenteeFormProps) => {
                     />
                   </FormControl>
                   <FormDescription>
-                    Select the technical skills you already have or are learning
+                    Select the skills you already have or are learning
                   </FormDescription>
                   <FormMessage />
                 </FormItem>

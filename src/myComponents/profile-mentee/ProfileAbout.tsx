@@ -1,9 +1,12 @@
 "use client";
+import { API_BASE } from "@/lib/api";
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Pencil, Quote } from "lucide-react";
+import { Pencil, Quote, AlertTriangle } from "lucide-react";
+import Loader from "@/components/Loader";
+import EmptyState from "@/components/EmptyState";
 import { toast } from "sonner";
 
 interface MenteeData {
@@ -21,7 +24,7 @@ const ProfileAbout: React.FC = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata",{  credentials: "include",});
+        const res = await fetch(`${API_BASE}/api/auth/menteedata`,{  credentials: "include",});
         const result = await res.json();
 
         if (!res.ok) {
@@ -46,9 +49,9 @@ const ProfileAbout: React.FC = () => {
     toast.success("Edit functionality coming soon!");
   };
 
-  if (loading) return <div>Loading profile...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!profile) return <div>No profile data found.</div>;
+  if (loading) return <Loader size="lg" label="Loading about..." />;
+  if (error) return <EmptyState icon={AlertTriangle} title="Could not load about section" description={error} />;
+  if (!profile) return <EmptyState title="No bio yet" description="Add a bio so others can get to know you." />;
 
   return (
     <Card className="mb-6 overflow-hidden border-2 border-accent/30">

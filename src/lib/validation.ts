@@ -16,7 +16,7 @@ export const mentorFormSchema = z.object({
   careerHistory: z.string().optional(),
   
   // Areas of Expertise & Skills
-  technicalSkills: z.array(z.string()).min(1, "Select at least one technical skill"),
+  technicalSkills: z.array(z.string()).min(1, "Select at least one skill"),
   industrySpecialization: z.string().optional(),
   softSkills: z.array(z.string()).optional(),
   
@@ -93,6 +93,14 @@ export const technicalSkillOptions = [
   "Database Administration",
   "Project Management",
   "Software Architecture",
+  "Digital Marketing",
+  "Content & Copywriting",
+  "Sales & Business Development",
+  "Finance & Accounting",
+  "Human Resources",
+  "Business Analysis",
+  "Graphic Design",
+  "Operations & Strategy",
 ];
 
 export const softSkillOptions = [

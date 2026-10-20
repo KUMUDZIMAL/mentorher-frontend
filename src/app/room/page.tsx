@@ -1,11 +1,13 @@
 "use client";
 import { Button } from '@/components/ui/button';
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Navbar from '@/myComponents/Navbar';
+import Loader from '@/components/Loader';
+import { apiFetch } from '@/lib/api';
+import { useAuth } from '@/lib/AuthContext';
 
 const Page = () => {
-  const router = useRouter();
+  const { status } = useAuth();
   const [user, setUser] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [roomId, setRoomId] = useState('');
@@ -14,31 +16,28 @@ const Page = () => {
   useEffect(() => {
     async function checkAuth() {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user", { cache: "no-store", credentials: "include" });
-        const data = await res.json();
-        // Adjust based on your API response structure
+        const data = await apiFetch<any>("/api/auth/user");
         if (data && data._id) {
           setUser(data);
-          router.push("/room");
-        } else {
-          router.push("/auth/login");
         }
       } catch (error) {
         console.error("Error checking auth status:", error);
-        router.push("/auth/login");
       } finally {
         setIsLoading(false);
       }
     }
     checkAuth();
-  }, [router]);
+  }, []);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        Loading...
-      </div>
-    );
+  // Redirect unauthenticated visitors to login (never during the auth check).
+  useEffect(() => {
+    if (!isLoading && status === "unauthenticated") {
+      window.location.href = "/auth/login";
+    }
+  }, [isLoading, status]);
+
+  if (isLoading || status === "loading") {
+    return <Loader fullPage size="lg" label="Checking authentication..." />;
   }
 
   if (!user) {

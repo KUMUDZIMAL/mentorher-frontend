@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE } from "@/lib/api";
 import { useState,useEffect } from "react";
 import React from "react";
 import { ArrowRight, HeartHandshake, GraduationCap, Users, Shield, Sparkles, Globe } from "lucide-react";
@@ -15,7 +16,7 @@ const Hero = () => {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/user", { cache: "no-store", credentials: "include" });
+        const res = await fetch(`${API_BASE}/api/auth/user`, { cache: "no-store", credentials: "include" });
         const data = await res.json();
         console.log("Fetched auth data:", data);
 
@@ -44,7 +45,7 @@ const Hero = () => {
     },
     {
       icon: <GraduationCap className="w-8 h-8 sm:w-10 sm:h-10 text-purple-700" />,
-      title: "AI Career Path Generator",
+      title: "AI Career Roadmap",
       description: "Personalized learning paths for professional growth",
       color: "from-violet-100 to-purple-200",
       route: "/chatbot"

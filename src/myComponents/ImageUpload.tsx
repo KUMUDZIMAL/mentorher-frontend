@@ -11,19 +11,29 @@ interface ImageUploadProps {
   className?: string;
 }
 
+const MAX_SIZE_MB = 2;
+
 const ImageUpload = ({ value, onChange, className = "" }: ImageUploadProps) => {
   const [preview, setPreview] = useState<string | null>(value);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Uploads the image file to Cloudinary and returns the secure URL.
-  const uploadImageToCloudinary = async (file: File): Promise<string> => {
+  // Uploads to Cloudinary when configured; otherwise stores the image locally
+  // as a data URL so uploads still work without any external service.
+  const uploadImage = async (file: File): Promise<string> => {
     const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
     const uploadPreset = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET;
 
     if (!cloudName || !uploadPreset) {
-      throw new Error("Cloudinary configuration is missing");
+      // Local fallback: read the file into a data URL.
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(String(reader.result));
+        reader.onerror = () => reject(new Error("Could not read the selected file."));
+        reader.readAsDataURL(file);
+      });
     }
 
     const formData = new FormData();
@@ -44,20 +54,26 @@ const ImageUpload = ({ value, onChange, className = "" }: ImageUploadProps) => {
 
   const handleFileChange = async (file: File | null) => {
     if (file) {
+      setError(null);
+      if (file.size > MAX_SIZE_MB * 1024 * 1024) {
+        setError(`Image is too large. Maximum size is ${MAX_SIZE_MB}MB.`);
+        return;
+      }
       try {
         setIsUploading(true);
-        // Upload the image to Cloudinary
-        const uploadedUrl = await uploadImageToCloudinary(file);
+        const uploadedUrl = await uploadImage(file);
         setPreview(uploadedUrl);
         onChange(uploadedUrl);
-      } catch (error: any) {
-        console.error("Upload error:", error.message);
+      } catch (err: any) {
+        console.error("Upload error:", err.message);
+        setError(err.message || "Upload failed. Please try again.");
       } finally {
         setIsUploading(false);
       }
     } else {
       onChange(null);
       setPreview(null);
+      setError(null);
     }
   };
 
@@ -184,6 +200,12 @@ const ImageUpload = ({ value, onChange, className = "" }: ImageUploadProps) => {
           )}
         </AnimatePresence>
       </div>
+
+      {error && (
+        <p className="mt-2 text-sm text-red-600" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   );
 };

@@ -52,7 +52,7 @@ const ContactUs: React.FC = () => {
   const SuccessMessage = () => (
     <div className="bg-green-50 border-l-4 border-green-500 p-4 sm:p-6 rounded-lg mb-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row items-start sm:items-center">
-        <CheckCircle className="text-green-600 mr-0 sm:mr-4 mb-2 sm:mb-0" size={28} className="sm:w-9 sm:h-9" />
+        <CheckCircle className="text-green-600 mr-0 sm:mr-4 mb-2 sm:mb-0 sm:w-9 sm:h-9" size={28} />
         <div>
           <h3 className="text-xl sm:text-2xl font-bold text-green-800 mb-2">Message Sent Successfully!</h3>
           <p className="text-sm sm:text-base text-green-700">
@@ -84,7 +84,7 @@ const ContactUs: React.FC = () => {
 
             <div className="bg-white shadow-xl sm:shadow-2xl rounded-xl sm:rounded-2xl p-6 sm:p-8 lg:p-10 border-t-4 border-purple-600">
               <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-6 sm:mb-8 flex flex-col sm:flex-row items-start sm:items-center">
-                <MessageCircle className="text-purple-600 mr-0 sm:mr-4 mb-2 sm:mb-0" size={28} className="sm:w-9 sm:h-9" />
+                <MessageCircle className="text-purple-600 mr-0 sm:mr-4 mb-2 sm:mb-0 sm:w-9 sm:h-9" size={28} />
                 Our Support Channels
               </h2>
               <div className="space-y-4 sm:space-y-6">
@@ -96,7 +96,7 @@ const ContactUs: React.FC = () => {
                 </div>
                 <div className="bg-purple-50 p-4 sm:p-6 rounded-lg border-l-4 border-purple-600">
                   <div className="flex items-center space-x-3 mb-3 sm:mb-4">
-                    <CheckCircle className="text-purple-600" size={20} className="sm:w-6 sm:h-6" />
+                    <CheckCircle className="text-purple-600 sm:w-6 sm:h-6" size={20} />
                     <p className="text-purple-800 font-medium text-sm sm:text-base">
                       Support Hours
                     </p>
@@ -172,7 +172,7 @@ const ContactUs: React.FC = () => {
                           <>Sending...</>
                         ) : (
                           <>
-                            <Send className="mr-2 sm:mr-3" size={20} className="sm:w-6 sm:h-6" />
+                            <Send className="mr-2 sm:mr-3 sm:w-6 sm:h-6" size={20} />
                             Send Message
                           </>
                         )}

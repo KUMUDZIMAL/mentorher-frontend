@@ -1,10 +1,14 @@
 "use client";
+import { API_BASE } from "@/lib/api";
 
 import React, { useEffect, useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Eye, Users, Medal, GraduationCap, Languages, ArrowUpRight } from "lucide-react";
+import { Users, Medal, GraduationCap, Languages, ArrowUpRight, AlertTriangle } from "lucide-react";
+import Loader from "@/components/Loader";
+import EmptyState from "@/components/EmptyState";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 interface MenteeData {
@@ -16,6 +20,7 @@ interface MenteeData {
 }
 
 const ProfileSidebar: React.FC = () => {
+  const router = useRouter();
   const [data, setData] = useState<MenteeData | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -24,7 +29,7 @@ const ProfileSidebar: React.FC = () => {
   useEffect(() => {
     const fetchProfileData = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata",{  credentials: "include",});
+        const res = await fetch(`${API_BASE}/api/auth/menteedata`,{  credentials: "include",});
         const result = await res.json();
         if (!res.ok) {
           setError(result.error || "Failed to load profile data");
@@ -48,25 +53,14 @@ const ProfileSidebar: React.FC = () => {
     fetchProfileData();
   }, []);
 
-  if (loading) return <div>Loading sidebar...</div>;
-  if (error) return <div>Error: {error}</div>;
-  if (!data) return <div>No sidebar data found.</div>;
+  if (loading) return <Loader size="lg" label="Loading details..." />;
+  if (error) return <EmptyState icon={AlertTriangle} title="Could not load details" description={error} />;
+  if (!data) return null;
 
-  const { languages, achievements = [], mentorshipExperience, profileViewCount = 0, education } = data;
+  const { languages, achievements = [], mentorshipExperience, education } = data;
 
   return (
     <div className="space-y-6">
-      {/* Profile Activity */}
-      <Card className="overflow-hidden border-2 border-accent/30">
-        <CardContent className="p-5">
-          <h3 className="font-medium text-lg mb-3">Profile Activity</h3>
-          <div className="flex items-center gap-2 text-base text-foreground/80">
-            <Eye className="h-5 w-5 text-primary/70" />
-            <span>{profileViewCount} profile views</span>
-          </div>
-        </CardContent>
-      </Card>
-      
       {/* Languages */}
       {languages && languages.length > 0 && (
         <Card className="overflow-hidden border-2 border-accent/30">
@@ -142,7 +136,10 @@ const ProfileSidebar: React.FC = () => {
           <p className="text-base text-foreground/80 mb-4">
             Connect with other mentors and mentees in the Women in Tech community
           </p>
-          <Button className="w-full rounded-full flex items-center gap-2 py-5 text-base">
+          <Button
+            className="w-full rounded-full flex items-center gap-2 py-5 text-base"
+            onClick={() => router.push("/forum")}
+          >
             Join Community
             <ArrowUpRight className="h-4 w-4" />
           </Button>

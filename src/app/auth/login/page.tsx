@@ -1,7 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/AuthContext';
+import { apiFetch, errorMessage } from '@/lib/api';
+import Loader from '@/components/Loader';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -9,6 +12,14 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { status, refresh } = useAuth();
+
+  // Once we know the user is signed in, leave the login page
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.replace('/');
+    }
+  }, [status, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -16,31 +27,24 @@ const Login: React.FC = () => {
     setError('');
 
     try {
-      const response = await fetch(
-        'https://mentorher-backend.vercel.app/api/auth/login',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include', // Ensure cookies are included
-          body: JSON.stringify({ username, password }),
-        }
-      );
-
-      const data = await response.json();
-
-      if (response.status === 200) {
-        router.push('/'); // Redirect on success
-      } else {
-        setError(data.error || 'Invalid credentials');
-      }
+      await apiFetch('/api/auth/login', {
+        method: 'POST',
+        body: { username, password },
+      });
+      await refresh();
+      router.push('/');
     } catch (err) {
-      setError('Something went wrong. Please try again later.');
+      setError(errorMessage(err));
     } finally {
       setLoading(false);
     }
   };
+
+  // Universal full-page loader until the auth (login/logout) info arrives,
+  // and while the login request itself is in flight.
+  if (status === 'loading' || status === 'authenticated' || loading) {
+    return <Loader fullPage size="lg" label="Loading..." />;
+  }
 
   return (
     <div className="flex h-screen w-full relative overflow-hidden bg-pink-50">
@@ -99,7 +103,7 @@ const Login: React.FC = () => {
               className="w-full py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors mt-4"
               disabled={loading}
             >
-              {loading ? 'Logging in...' : 'Login'}
+              Login
             </button>
           </form>
 

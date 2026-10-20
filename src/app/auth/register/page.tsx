@@ -1,6 +1,9 @@
 "use client";
-import React, { useState } from 'react';
+import { API_BASE } from "@/lib/api";
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuth } from '@/lib/AuthContext';
+import Loader from '@/components/Loader';
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState('');
@@ -11,6 +14,14 @@ const Register: React.FC = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { status } = useAuth();
+
+  // Signed-in users don't need the signup form
+  useEffect(() => {
+    if (status === 'authenticated') {
+      router.replace('/');
+    }
+  }, [status, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,7 +29,7 @@ const Register: React.FC = () => {
     setError('');
 
     try {
-      const response = await fetch('https://mentorher-backend.vercel.app/api/auth/register', {
+      const response = await fetch(`${API_BASE}/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, email, age, gender, password }),
@@ -38,6 +49,12 @@ const Register: React.FC = () => {
 
     setLoading(false);
   };
+
+  // Universal full-page loader until the auth (login/logout) info arrives,
+  // and while the signup request itself is in flight.
+  if (status === 'loading' || status === 'authenticated' || loading) {
+    return <Loader fullPage size="lg" label="Loading..." />;
+  }
 
   return (
     <div className="flex h-screen w-full relative justify-center items-center bg-pink-50">
@@ -118,7 +135,7 @@ const Register: React.FC = () => {
             className="w-full py-2 bg-pink-600 text-white rounded-md hover:bg-pink-700 transition-colors"
             disabled={loading}
           >
-            {loading ? 'Creating account...' : 'Sign Up'}
+            Sign Up
           </button>
         </form>
 

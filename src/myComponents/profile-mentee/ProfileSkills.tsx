@@ -1,10 +1,13 @@
 "use client";
+import { API_BASE } from "@/lib/api";
 
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Pencil, Sparkles } from "lucide-react";
+import { Pencil, Sparkles, AlertTriangle } from "lucide-react";
+import Loader from "@/components/Loader";
+import EmptyState from "@/components/EmptyState";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 
@@ -22,7 +25,7 @@ const ProfileSkills: React.FC = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/menteedata",  {credentials: "include"});
+        const res = await fetch(`${API_BASE}/api/auth/menteedata`,  {credentials: "include"});
         const result = await res.json();
 
         if (!res.ok) {
@@ -33,7 +36,7 @@ const ProfileSkills: React.FC = () => {
         const fetchedData = result.data;
         // Map the technicalSkills (array of strings) to a single SkillCategory.
         const skillsArray: SkillCategory[] = fetchedData.technicalSkills
-          ? [{ name: "Technical Skills", skills: fetchedData.technicalSkills }]
+          ? [{ name: "Skills", skills: fetchedData.technicalSkills }]
           : [];
         setCategories(skillsArray);
       } catch (err: any) {
@@ -50,8 +53,8 @@ const ProfileSkills: React.FC = () => {
     toast.success("Edit skills functionality coming soon!");
   };
 
-  if (loading) return <div>Loading skills...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (loading) return <Loader size="lg" label="Loading skills..." />;
+  if (error) return <EmptyState icon={AlertTriangle} title="Could not load skills" description={error} />;
 
   return (
     <Card className="mb-6 border-2 border-accent/30 overflow-hidden">

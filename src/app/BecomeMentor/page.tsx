@@ -1,10 +1,12 @@
 "use client";
+import { API_BASE } from "@/lib/api";
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import Loader from "@/components/Loader";
 import { toast } from "sonner";
 import MentorForm from "../../myComponents/MentorForm";
 import Navbar from "@/myComponents/Navbar";
@@ -28,7 +30,7 @@ const BecomeMentor: React.FC = () => {
   useEffect(() => {
     async function fetchMenteeData() {
       try {
-        const res = await fetch('https://mentorher-backend.vercel.app/api/auth/mentordata', {  credentials: "include",});
+        const res = await fetch(`${API_BASE}/api/auth/mentordata`, {  credentials: "include",});
         if (res.status === 401) {
           router.push('/auth/login');
           return;
@@ -51,13 +53,7 @@ const BecomeMentor: React.FC = () => {
   }, [router]);
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-transparent">
-        <div className="bg-white/10 backdrop-blur-xl p-8 rounded-2xl shadow-lg border border-white/20 text-center">
-          <div className="animate-pulse text-2xl font-medium text-white">Loading...</div>
-        </div>
-      </div>
-    );
+    return <Loader fullPage size="lg" label="Loading..." />;
   }
 
   return (

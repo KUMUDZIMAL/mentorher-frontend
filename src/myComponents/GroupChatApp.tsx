@@ -1,4 +1,5 @@
 "use client";
+import { API_BASE } from "@/lib/api";
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Navbar from './Navbar';
@@ -25,7 +26,7 @@ export default function GroupChatPage() {
   useEffect(() => {
     const fetchGroups = async () => {
       try {
-        const res = await fetch('https://mentorher-backend.vercel.app/api/groups', { credentials: "include" });
+        const res = await fetch(`${API_BASE}/api/groups`, { credentials: "include" });
         if (!res.ok) {
           console.error('Failed to fetch groups');
           return;
@@ -43,7 +44,7 @@ export default function GroupChatPage() {
     if (!newGroupName.trim() || selectedUsernames.length === 0) return;
     
     try {
-      const res = await fetch('https://mentorher-backend.vercel.app/api/groups', {
+      const res = await fetch(`${API_BASE}/api/groups`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -71,7 +72,7 @@ export default function GroupChatPage() {
     if (!currentGroupId || !newParticipantUsername.trim()) return;
   
     try {
-      const res = await fetch('https://mentorher-backend.vercel.app/api/groups', {
+      const res = await fetch(`${API_BASE}/api/groups`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 

@@ -1,8 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // Import the EventType as a type-only import from EventsCalendar
 import type { EventType } from "./EventsCalendar";
+import { useAuth } from "@/lib/AuthContext";
+import { apiFetch, errorMessage } from "@/lib/api";
 
 // Define the props for RegistrationModal using the correct event type
 export interface RegistrationModalProps {
@@ -12,17 +14,30 @@ export interface RegistrationModalProps {
 }
 
 function RegistrationModal({ event, onClose, onRegister }: RegistrationModalProps) {
-  // Pre-fill title, date, time from the selected event
+  const { user } = useAuth();
+  // Pre-fill title, date, time from the selected event and the signed-in user
   const [formData, setFormData] = useState({
     title: event.title || "",
     date: event.date || "",
     time: event.time || "",
-    fullName: "",
-    email: "",
+    fullName: user?.username || "",
+    email: user?.email || "",
     phone: "",
     isMentor: "", // "yes" or "no"
   });
+  const [submitError, setSubmitError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  // Prefill once the authenticated user finishes loading
+  useEffect(() => {
+    if (!user) return;
+    setFormData((prev) => ({
+      ...prev,
+      fullName: prev.fullName || user.username || "",
+      email: prev.email || user.email || "",
+    }));
+  }, [user]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -31,34 +46,28 @@ function RegistrationModal({ event, onClose, onRegister }: RegistrationModalProp
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSubmitError("");
     // Basic validation for all fields
     if (formData.fullName && formData.email && formData.phone && formData.isMentor) {
+      setSubmitting(true);
       try {
-        const response = await fetch("https://mentorher-backend.vercel.app/api/registerEvent", {
+        await apiFetch("/api/registerEvent", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            // In a real application, userId would be retrieved from the authenticated user or token
-            userId: "dummyUserId",
+          body: {
+            userId: user?._id,
             eventId: event.id,
             ...formData,
-          }),
-          credentials: "include",
+          },
         });
-        const data = await response.json();
-
-        if (response.ok) {
-          setSubmitted(true);
-          onRegister(formData);
-        } else {
-          alert(data.error || "Registration failed");
-        }
+        setSubmitted(true);
+        onRegister(formData);
       } catch (error) {
-        console.error(error);
-        alert("Registration failed");
+        setSubmitError(errorMessage(error));
+      } finally {
+        setSubmitting(false);
       }
     } else {
-      alert("Please fill in all the fields.");
+      setSubmitError("Please fill in all the fields.");
     }
   };
 
@@ -177,11 +186,16 @@ function RegistrationModal({ event, onClose, onRegister }: RegistrationModalProp
               </div>
             </div>
 
+            {submitError && (
+              <p className="mb-4 text-sm text-red-600">{submitError}</p>
+            )}
+
             <button
               type="submit"
-              className="px-5 py-2.5 bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 font-medium"
+              disabled={submitting}
+              className="px-5 py-2.5 bg-gradient-to-r from-blue-600 via-purple-500 to-pink-500 text-white rounded-lg shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 font-medium disabled:opacity-60 disabled:cursor-not-allowed"
             >
-              Register
+              {submitting ? "Registering..." : "Register"}
             </button>
           </form>
         )}

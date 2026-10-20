@@ -1,5 +1,6 @@
 // app/video-call/RoomContent.tsx
 "use client";
+import { API_BASE } from "@/lib/api";
 import React, { useEffect, useRef, useState } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import Navbar from "@/myComponents/Navbar";
@@ -20,7 +21,7 @@ const RoomContent: React.FC = () => {
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const response = await fetch("https://mentorher-backend.vercel.app/api/auth/user", { credentials: "include" });
+        const response = await fetch(`${API_BASE}/api/auth/user`, { credentials: "include" });
         const data = await response.json();
         console.log("User data fetched:", data);
         if (data && data._id) {

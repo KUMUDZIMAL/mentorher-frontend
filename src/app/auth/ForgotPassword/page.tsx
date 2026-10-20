@@ -1,36 +1,45 @@
 "use client";
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { useRouter } from 'next/navigation';
+import { API_BASE } from '@/lib/api';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState<string>('');
   const [message, setMessage] = useState<string>('');
+  const [devLink, setDevLink] = useState<string>('');
   const [error, setError] = useState<string>('');
+  const [submitting, setSubmitting] = useState<boolean>(false);
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setMessage('');
+    setDevLink('');
     setError('');
+    setSubmitting(true);
 
     try {
-      const response = await fetch('/api/auth/ForgotPassword', {
+      const response = await fetch(`${API_BASE}/api/auth/forgot-password`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email }),
+        credentials: 'include',
       });
 
       const data = await response.json();
 
-      if (response.status === 200) {
-        setMessage('Password reset link sent to your email');
+      if (response.ok) {
+        setMessage(data.message || 'Password reset link sent to your email');
+        if (data.devResetLink) setDevLink(data.devResetLink);
       } else {
         setError(data.error || 'Something went wrong');
       }
     } catch (err) {
       setError('An error occurred. Please try again later.');
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -60,6 +69,18 @@ const ForgotPassword = () => {
           {message && <p className="text-violet-700 text-center mb-4">{message}</p>}
           {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
+          {devLink && (
+            <div className="mb-4 p-3 bg-amber-50 border border-amber-300 rounded-md text-sm">
+              <p className="font-semibold text-amber-800 mb-1">Dev mode (SMTP not configured)</p>
+              <a
+                href={devLink}
+                className="text-violet-700 underline break-all"
+              >
+                {devLink}
+              </a>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label htmlFor="email" className="block text-sm font-medium text-gray-700">
@@ -77,9 +98,10 @@ const ForgotPassword = () => {
 
             <button
               type="submit"
-              className="w-full py-2 bg-violet-700 text-white rounded-md hover:bg-violet-600"
+              disabled={submitting}
+              className="w-full py-2 bg-violet-700 text-white rounded-md hover:bg-violet-600 disabled:opacity-60"
             >
-              Send Reset Link
+              {submitting ? 'Sending...' : 'Send Reset Link'}
             </button>
           </form>
 

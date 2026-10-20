@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Navbar from "@/myComponents/Navbar";
@@ -16,6 +16,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import Loader from "@/components/Loader";
+import EmptyState from "@/components/EmptyState";
 import {
   Calendar,
   CheckCircle2,
@@ -25,136 +27,131 @@ import {
   Users,
   XCircle,
   BookOpen,
-  Star,
   Calendar as CalendarIcon,
   AlertCircle,
   BellRing,
+  AlertTriangle,
+  CheckCheck,
+  Settings,
+  UserCircle,
+  UsersRound,
 } from "lucide-react";
 import { toast } from "sonner";
+import { apiFetch, ApiError, errorMessage } from "@/lib/api";
+import { useAuth } from "@/lib/AuthContext";
+import { formatDate, formatTime, dateParts, timeAgo } from "@/lib/format";
 
-// Mock data for dashboard components
-const mentorAppointments = [
-  {
-    id: "1",
-    menteeName: "Jessica Lee",
-    menteePhoto: "https://randomuser.me/api/portraits/women/33.jpg",
-    date: "2023-09-15",
-    time: "10:00 AM - 11:00 AM",
-    status: "pending",
-    topic: "Career Transition to Tech",
-    message: "I would love to discuss how to transition from marketing to product management in tech."
-  },
-  {
-    id: "2",
-    menteeName: "Rachel Green",
-    menteePhoto: "https://randomuser.me/api/portraits/women/44.jpg",
-    date: "2023-09-18",
-    time: "3:00 PM - 4:00 PM",
-    status: "accepted",
-    topic: "Technical Interview Preparation",
-    message: "I have an interview next week and would appreciate your guidance on algorithm questions."
-  },
-  {
-    id: "3",
-    menteeName: "Monica Geller",
-    menteePhoto: "https://randomuser.me/api/portraits/women/55.jpg",
-    date: "2023-09-20",
-    time: "2:00 PM - 3:00 PM",
-    status: "completed",
-    topic: "Leadership in Tech",
-    message: "I want to discuss strategies for leading engineering teams effectively."
-  },
-  {
-    id: "4",
-    menteeName: "Phoebe Buffay",
-    menteePhoto: "https://randomuser.me/api/portraits/women/66.jpg",
-    date: "2023-09-22",
-    time: "11:00 AM - 12:00 PM",
-    status: "declined",
-    topic: "Work-Life Balance",
-    message: "I'm struggling with burnout and would like to discuss coping strategies."
-  }
-];
+interface PersonBrief {
+  userId?: string;
+  fullName?: string;
+  profilePhoto?: string;
+  role?: string;
+  company?: string;
+}
 
-const mentorMessages = [
-  {
-    id: "1",
-    from: "Jessica Lee",
-    photo: "https://randomuser.me/api/portraits/women/33.jpg",
-    message: "Thank you for accepting my mentorship request! Looking forward to our session.",
-    time: "2 hours ago",
-    read: false
-  },
-  {
-    id: "2",
-    from: "Rachel Green",
-    photo: "https://randomuser.me/api/portraits/women/44.jpg",
-    message: "I've shared some resources ahead of our technical interview prep session.",
-    time: "Yesterday",
-    read: true
-  },
-  {
-    id: "3",
-    from: "System Notification",
-    photo: "",
-    message: "You have 3 new mentee applications to review.",
-    time: "2 days ago",
-    read: true
-  }
-];
+interface SessionRequest {
+  _id: string;
+  topic: string;
+  message?: string;
+  date: string;
+  time: string;
+  status: "pending" | "accepted" | "declined" | "completed";
+  createdAt: string;
+  mentor: PersonBrief | null;
+  mentee: PersonBrief | null;
+}
 
-const mentorStats = {
-  totalMentees: 12,
-  activeSessionsThisMonth: 8,
-  completedSessions: 45,
-  averageRating: 4.8,
-  hoursContributed: 76
-};
+interface MentorDashboardData {
+  profile: { fullName: string; profilePhoto: string; currentRole: string; company: string };
+  stats: {
+    totalMentees: number;
+    sessionsThisMonth: number;
+    totalSessions: number;
+    pendingRequests: number;
+  };
+  requests: { pending: SessionRequest[]; upcoming: SessionRequest[]; past: SessionRequest[] };
+  schedule: SessionRequest[];
+  messages: {
+    recent: {
+      _id: string;
+      content: string;
+      read: boolean;
+      createdAt: string;
+      from: PersonBrief | null;
+    }[];
+    unreadCount: number;
+  };
+}
 
-const upcomingSessions = [
-  {
-    id: "1",
-    menteeName: "Rachel Green",
-    photo: "https://randomuser.me/api/portraits/women/44.jpg",
-    date: "Sep 18, 2023",
-    time: "3:00 PM - 4:00 PM",
-    topic: "Technical Interview Preparation"
-  },
-  {
-    id: "2",
-    menteeName: "Linda Chen",
-    photo: "https://randomuser.me/api/portraits/women/28.jpg",
-    date: "Sep 25, 2023",
-    time: "1:00 PM - 2:00 PM",
-    topic: "Frontend Development Best Practices"
-  }
-];
+type LoadState = "loading" | "ready" | "error";
 
 const MentorDashboard = () => {
   const router = useRouter();
-  const [loading, setLoading] = useState(true);
-  const [mentorData, setMentorData] = useState<any>(null);
-  const [appointments, setAppointments] = useState(mentorAppointments);
+  const { status: authStatus, user } = useAuth();
+
+  const [data, setData] = useState<MentorDashboardData | null>(null);
+  const [state, setState] = useState<LoadState>("loading");
+  const [error, setError] = useState("");
+  const [actionId, setActionId] = useState<string | null>(null);
 
   useEffect(() => {
-    async function fetchMentorData() {
-      try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/mentordata" ,{  credentials: "include",});
-        const json = await res.json();
-        if (json.success && json.data) {
-          setMentorData(json.data);
-        } else {
-          router.push("/BecomeMentor");
-        }
-      } catch (error) {
-        console.error("Error fetching mentor data:", error);
-        router.push("/BecomeMentor");
-      } finally {
-        setLoading(false);
-      }
+    if (authStatus === "unauthenticated") {
+      router.replace("/auth/login");
     }
-    fetchMentorData();
+  }, [authStatus, router]);
+
+  const loadDashboard = useCallback(async () => {
+    setState("loading");
+    try {
+      const result = await apiFetch<MentorDashboardData>("/api/dashboard/mentor");
+      setData(result);
+      setState("ready");
+    } catch (err) {
+      if (err instanceof ApiError && err.status === 404) {
+        // No mentor profile in MongoDB yet.
+        router.replace("/BecomeMentor");
+        return;
+      }
+      setError(errorMessage(err));
+      setState("error");
+    }
   }, [router]);
+
+  useEffect(() => {
+    if (authStatus === "authenticated") {
+      loadDashboard();
+    }
+  }, [authStatus, loadDashboard]);
+
+  const updateStatus = async (id: string, status: "accepted" | "declined" | "completed") => {
+    setActionId(id);
+    try {
+      await apiFetch(`/api/requests/${id}`, { method: "PATCH", body: { status } });
+      toast.success(
+        status === "accepted"
+          ? "Request accepted"
+          : status === "declined"
+            ? "Request declined"
+            : "Session marked as completed",
+        { description: "The mentee has been notified." }
+      );
+      await loadDashboard();
+    } catch (err) {
+      toast.error(errorMessage(err));
+    } finally {
+      setActionId(null);
+    }
+  };
+
+  const handleMarkAllRead = async () => {
+    try {
+      await apiFetch("/api/messages/read", { method: "POST" });
+      toast.success("Messages marked as read");
+      loadDashboard();
+    } catch (err) {
+      toast.error(errorMessage(err));
+    }
+  };
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -162,9 +159,9 @@ const MentorDashboard = () => {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        when: "beforeChildren"
-      }
-    }
+        when: "beforeChildren" as const,
+      },
+    },
   };
 
   const itemVariants = {
@@ -174,88 +171,82 @@ const MentorDashboard = () => {
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: "easeOut"
-      }
-    }
+        ease: "easeOut" as const,
+      },
+    },
   };
 
-  if (loading) {
+  // AUTH_LOADING -> Loader
+  if (authStatus === "loading" || state === "loading") {
+    return <Loader fullPage size="lg" label="Loading your dashboard..." />;
+  }
+
+  if (state === "error") {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-purple-50 to-blue-50">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-          className="w-16 h-16 border-4 border-purple-500 border-t-transparent rounded-full"
-        />
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-purple-50">
+        <Navbar />
+        <div className="max-w-xl mx-auto pt-32 px-4">
+          <EmptyState
+            icon={AlertTriangle}
+            title="Could not load your dashboard"
+            description={error}
+            action={
+              <Button
+                onClick={() => {
+                  setState("loading");
+                  loadDashboard();
+                }}
+                className="bg-gradient-to-r from-purple-500 to-pink-500 text-white"
+              >
+                Try again
+              </Button>
+            }
+          />
+        </div>
       </div>
     );
   }
 
-  const handleAccept = (id: string) => {
-    setAppointments(appointments.map(app => 
-      app.id === id ? { ...app, status: "accepted" } : app
-    ));
-    toast.success("Appointment accepted", { 
-      description: "The mentee has been notified of your acceptance."
-    });
-  };
+  if (!data) return null;
 
-  const handleDecline = (id: string) => {
-    setAppointments(appointments.map(app => 
-      app.id === id ? { ...app, status: "declined" } : app
-    ));
-    toast.success("Appointment declined", { 
-      description: "The mentee has been notified."
-    });
-  };
+  const { stats, requests, schedule, messages, profile } = data;
+  const pendingAppointments = requests.pending;
+  const upcomingAppointments = requests.upcoming;
+  const pastAppointments = requests.past;
 
-  const handleComplete = (id: string) => {
-    setAppointments(appointments.map(app => 
-      app.id === id ? { ...app, status: "completed" } : app
-    ));
-    toast.success("Session marked as completed", {
-      description: "Thank you for contributing to the community!"
-    });
-  };
+  const menteeLabel = (appointment: SessionRequest) => appointment.mentee?.fullName || "Mentee";
+  const menteePhoto = (appointment: SessionRequest) => appointment.mentee?.profilePhoto || "";
+  const menteeInitials = (appointment: SessionRequest) =>
+    menteeLabel(appointment)
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .slice(0, 2)
+      .toUpperCase();
 
-  const pendingAppointments = appointments.filter(app => app.status === "pending");
-  const upcomingAppointments = appointments.filter(app => app.status === "accepted");
-  const pastAppointments = appointments.filter(app => app.status === "completed" || app.status === "declined");
+  const statCards = [
+    { icon: Users, label: "Total Mentees", value: stats.totalMentees, color: "text-purple-500" },
+    { icon: CalendarIcon, label: "This Month's Sessions", value: stats.sessionsThisMonth, color: "text-blue-500" },
+    { icon: CheckCircle2, label: "Total Sessions", value: stats.totalSessions, color: "text-green-500" },
+    { icon: AlertCircle, label: "Pending Requests", value: stats.pendingRequests, color: "text-yellow-500" },
+  ];
 
   return (
     <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-blue-50 to-purple-50">
- 
-      <motion.div 
-        animate={{
-          y: [0, -15, 0],
-          x: [0, 10, 0],
-        }}
-        transition={{
-          duration: 15,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut"
-        }}
+      <motion.div
+        animate={{ y: [0, -15, 0], x: [0, 10, 0] }}
+        transition={{ duration: 15, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
         className="absolute top-1/4 left-1/4 w-64 h-64 bg-purple-100/20 rounded-full mix-blend-overlay filter blur-xl"
       />
-      <motion.div 
-        animate={{
-          y: [0, 20, 0],
-          x: [0, -15, 0],
-        }}
-        transition={{
-          duration: 20,
-          repeat: Infinity,
-          repeatType: "reverse",
-          ease: "easeInOut"
-        }}
+      <motion.div
+        animate={{ y: [0, 20, 0], x: [0, -15, 0] }}
+        transition={{ duration: 20, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }}
         className="absolute bottom-1/3 right-1/4 w-72 h-72 bg-blue-100/20 rounded-full mix-blend-overlay filter blur-xl"
       />
 
-<Navbar/>
+      <Navbar />
 
-    
-      <motion.main 
+      <motion.main
         initial="hidden"
         animate="visible"
         variants={containerVariants}
@@ -265,14 +256,16 @@ const MentorDashboard = () => {
         <motion.div variants={itemVariants} className="bg-white/95 backdrop-blur-md rounded-xl shadow-sm p-6 mb-8">
           <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
             <div>
-              <h1 className="text-2xl font-bold text-gray-800">Mentor Dashboard</h1>
+              <h1 className="text-2xl font-bold text-gray-800">
+                Welcome, {profile.fullName || user?.username || "Mentor"}
+              </h1>
               <p className="text-gray-600">Manage your mentorship activities and appointments</p>
             </div>
-            
+
             <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="w-full">
-                <Button 
-                  variant="outline" 
+                <Button
+                  variant="outline"
                   className="w-full bg-white/95 text-gray-800 border hover:bg-gray-50/95 backdrop-blur-sm"
                   onClick={() => router.push("/profile/mentor")}
                 >
@@ -281,7 +274,10 @@ const MentorDashboard = () => {
                 </Button>
               </motion.div>
               <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }} className="w-full">
-                <Button className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white backdrop-blur-sm">
+                <Button
+                  className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:opacity-90 text-white backdrop-blur-sm"
+                  onClick={() => router.push("/set-availability")}
+                >
                   <Calendar className="mr-2 h-4 w-4" />
                   Set Availability
                 </Button>
@@ -292,18 +288,11 @@ const MentorDashboard = () => {
 
         {/* Stats Cards */}
         <motion.div variants={containerVariants} className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-          {[
-            { icon: Users, label: "Total Mentees", value: mentorStats.totalMentees, color: "text-purple-500" },
-            { icon: CalendarIcon, label: "This Month's Sessions", value: mentorStats.activeSessionsThisMonth, color: "text-blue-500" },
-            { icon: CheckCircle2, label: "Total Sessions", value: mentorStats.completedSessions, color: "text-green-500" },
-            { icon: Star, label: "Average Rating", value: `${mentorStats.averageRating}/5`, color: "text-yellow-500" }
-          ].map((stat, index) => (
+          {statCards.map((stat, index) => (
             <motion.div key={index} variants={itemVariants}>
               <Card className="bg-white/95 backdrop-blur-md">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-sm font-medium text-muted-foreground">
-                    {stat.label}
-                  </CardTitle>
+                  <CardTitle className="text-sm font-medium text-muted-foreground">{stat.label}</CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="flex items-center">
@@ -346,15 +335,16 @@ const MentorDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     {pendingAppointments.length === 0 ? (
-                      <div className="py-6 text-center">
-                        <AlertCircle className="mx-auto h-12 w-12 text-muted-foreground opacity-30 mb-2" />
-                        <p className="text-muted-foreground">No pending requests at the moment.</p>
-                      </div>
+                      <EmptyState
+                        icon={AlertCircle}
+                        title="No pending requests at the moment"
+                        description="New session requests from mentees will appear here."
+                      />
                     ) : (
                       <div className="space-y-6">
                         {pendingAppointments.map((appointment) => (
-                          <motion.div 
-                            key={appointment.id} 
+                          <motion.div
+                            key={appointment._id}
                             variants={itemVariants}
                             whileHover={{ y: -2 }}
                             className="border border-gray-200/30 rounded-xl p-4 bg-white/90 backdrop-blur-sm shadow-sm"
@@ -362,11 +352,11 @@ const MentorDashboard = () => {
                             <div className="flex justify-between items-start mb-4">
                               <div className="flex items-center">
                                 <Avatar className="h-10 w-10 mr-3">
-                                  <AvatarImage src={appointment.menteePhoto} />
-                                  <AvatarFallback>{appointment.menteeName.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+                                  <AvatarImage src={menteePhoto(appointment)} />
+                                  <AvatarFallback>{menteeInitials(appointment)}</AvatarFallback>
                                 </Avatar>
                                 <div>
-                                  <h4 className="font-medium text-gray-800">{appointment.menteeName}</h4>
+                                  <h4 className="font-medium text-gray-800">{menteeLabel(appointment)}</h4>
                                   <p className="text-sm text-gray-600">{appointment.topic}</p>
                                 </div>
                               </div>
@@ -378,24 +368,29 @@ const MentorDashboard = () => {
                             <div className="mb-4 text-sm">
                               <div className="flex items-center text-gray-600 mb-1">
                                 <CalendarIcon className="mr-2 h-4 w-4" />
-                                {appointment.date}
+                                {formatDate(appointment.date)}
                               </div>
                               <div className="flex items-center text-gray-600">
                                 <Clock className="mr-2 h-4 w-4" />
-                                {appointment.time}
+                                {appointment.time?.includes("-")
+                                  ? appointment.time
+                                  : `${formatTime(appointment.time)}`}
                               </div>
                             </div>
 
-                            <div className="mb-4 p-3 bg-gray-100/50 rounded-md text-sm">
-                              <p className="italic text-gray-700">"{appointment.message}"</p>
-                            </div>
+                            {appointment.message && (
+                              <div className="mb-4 p-3 bg-gray-100/50 rounded-md text-sm">
+                                <p className="italic text-gray-700">"{appointment.message}"</p>
+                              </div>
+                            )}
 
                             <div className="flex space-x-2 justify-end">
                               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  onClick={() => handleDecline(appointment.id)}
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  disabled={actionId === appointment._id}
+                                  onClick={() => updateStatus(appointment._id, "declined")}
                                   className="backdrop-blur-sm"
                                 >
                                   <XCircle className="mr-1 h-4 w-4" />
@@ -403,9 +398,10 @@ const MentorDashboard = () => {
                                 </Button>
                               </motion.div>
                               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                <Button 
-                                  size="sm" 
-                                  onClick={() => handleAccept(appointment.id)}
+                                <Button
+                                  size="sm"
+                                  disabled={actionId === appointment._id}
+                                  onClick={() => updateStatus(appointment._id, "accepted")}
                                   className="backdrop-blur-sm"
                                 >
                                   <CheckCircle2 className="mr-1 h-4 w-4" />
@@ -431,15 +427,16 @@ const MentorDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     {upcomingAppointments.length === 0 ? (
-                      <div className="py-6 text-center">
-                        <Calendar className="mx-auto h-12 w-12 text-muted-foreground opacity-30 mb-2" />
-                        <p className="text-muted-foreground">No upcoming sessions scheduled.</p>
-                      </div>
+                      <EmptyState
+                        icon={Calendar}
+                        title="No upcoming sessions scheduled"
+                        description="Accepted session requests will show up here."
+                      />
                     ) : (
                       <div className="space-y-6">
                         {upcomingAppointments.map((appointment) => (
-                          <motion.div 
-                            key={appointment.id} 
+                          <motion.div
+                            key={appointment._id}
                             variants={itemVariants}
                             whileHover={{ y: -2 }}
                             className="border border-gray-200/30 rounded-xl p-4 bg-white/90 backdrop-blur-sm shadow-sm"
@@ -447,11 +444,11 @@ const MentorDashboard = () => {
                             <div className="flex justify-between items-start mb-4">
                               <div className="flex items-center">
                                 <Avatar className="h-10 w-10 mr-3">
-                                  <AvatarImage src={appointment.menteePhoto} />
-                                  <AvatarFallback>{appointment.menteeName.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+                                  <AvatarImage src={menteePhoto(appointment)} />
+                                  <AvatarFallback>{menteeInitials(appointment)}</AvatarFallback>
                                 </Avatar>
                                 <div>
-                                  <h4 className="font-medium text-gray-800">{appointment.menteeName}</h4>
+                                  <h4 className="font-medium text-gray-800">{menteeLabel(appointment)}</h4>
                                   <p className="text-sm text-gray-600">{appointment.topic}</p>
                                 </div>
                               </div>
@@ -463,29 +460,43 @@ const MentorDashboard = () => {
                             <div className="mb-4 text-sm">
                               <div className="flex items-center text-gray-600 mb-1">
                                 <CalendarIcon className="mr-2 h-4 w-4" />
-                                {appointment.date}
+                                {formatDate(appointment.date)}
                               </div>
                               <div className="flex items-center text-gray-600">
                                 <Clock className="mr-2 h-4 w-4" />
-                                {appointment.time}
+                                {appointment.time?.includes("-")
+                                  ? appointment.time
+                                  : `${formatTime(appointment.time)}`}
                               </div>
                             </div>
 
-                            <div className="mb-4 p-3 bg-gray-100/50 rounded-md text-sm">
-                              <p className="italic text-gray-700">"{appointment.message}"</p>
-                            </div>
+                            {appointment.message && (
+                              <div className="mb-4 p-3 bg-gray-100/50 rounded-md text-sm">
+                                <p className="italic text-gray-700">"{appointment.message}"</p>
+                              </div>
+                            )}
 
                             <div className="flex space-x-2 justify-end">
                               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                <Button variant="outline" size="sm" className="backdrop-blur-sm">
+                                <Button
+                                  variant="outline"
+                                  size="sm"
+                                  className="backdrop-blur-sm"
+                                  disabled={!appointment.mentee?.userId}
+                                  onClick={() =>
+                                    appointment.mentee?.userId &&
+                                    router.push(`/chat/${appointment.mentee.userId}`)
+                                  }
+                                >
                                   <MessageSquare className="mr-1 h-4 w-4" />
                                   Message
                                 </Button>
                               </motion.div>
                               <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-                                <Button 
-                                  size="sm" 
-                                  onClick={() => handleComplete(appointment.id)}
+                                <Button
+                                  size="sm"
+                                  disabled={actionId === appointment._id}
+                                  onClick={() => updateStatus(appointment._id, "completed")}
                                   className="backdrop-blur-sm"
                                 >
                                   <CheckCircle2 className="mr-1 h-4 w-4" />
@@ -511,10 +522,11 @@ const MentorDashboard = () => {
                   </CardHeader>
                   <CardContent>
                     {pastAppointments.length === 0 ? (
-                      <div className="py-6 text-center">
-                        <BookOpen className="mx-auto h-12 w-12 text-muted-foreground opacity-30 mb-2" />
-                        <p className="text-muted-foreground">No past sessions yet.</p>
-                      </div>
+                      <EmptyState
+                        icon={BookOpen}
+                        title="No past sessions yet"
+                        description="Completed and declined requests will be listed here."
+                      />
                     ) : (
                       <Table>
                         <TableHeader>
@@ -528,8 +540,8 @@ const MentorDashboard = () => {
                         </TableHeader>
                         <TableBody>
                           {pastAppointments.map((appointment) => (
-                            <motion.tr 
-                              key={appointment.id}
+                            <motion.tr
+                              key={appointment._id}
                               variants={itemVariants}
                               whileHover={{ backgroundColor: "rgba(255, 255, 255, 0.8)" }}
                               className="backdrop-blur-sm"
@@ -537,22 +549,20 @@ const MentorDashboard = () => {
                               <TableCell className="font-medium">
                                 <div className="flex items-center">
                                   <Avatar className="h-8 w-8 mr-2">
-                                    <AvatarImage src={appointment.menteePhoto} />
-                                    <AvatarFallback>{appointment.menteeName.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+                                    <AvatarImage src={menteePhoto(appointment)} />
+                                    <AvatarFallback>{menteeInitials(appointment)}</AvatarFallback>
                                   </Avatar>
-                                  {appointment.menteeName}
+                                  {menteeLabel(appointment)}
                                 </div>
                               </TableCell>
-                              <TableCell>{appointment.date}</TableCell>
+                              <TableCell>{formatDate(appointment.date)}</TableCell>
                               <TableCell>{appointment.topic}</TableCell>
                               <TableCell>
                                 {appointment.status === "completed" ? (
-                                  <Badge className="bg-green-50 text-green-700 border-green-200">
-                                    Completed
-                                  </Badge>
+                                  <Badge className="bg-green-50 text-green-700 border-green-200">Completed</Badge>
                                 ) : (
                                   <Badge variant="outline" className="bg-gray-50 text-gray-700 border-gray-200">
-                                    Declined
+                                    {appointment.status === "declined" ? "Declined" : "Ended"}
                                   </Badge>
                                 )}
                               </TableCell>
@@ -576,7 +586,7 @@ const MentorDashboard = () => {
             </Tabs>
           </div>
 
-          {/* Right Column - Messages and Events */}
+          {/* Right Column - Messages, Schedule and Quick links */}
           <div className="lg:col-span-1 space-y-6">
             {/* Messages card */}
             <motion.div variants={itemVariants}>
@@ -584,90 +594,126 @@ const MentorDashboard = () => {
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-800">
                     <BellRing className="h-5 w-5 text-primary/70" />
-                    Messages 
-                    <Badge className="ml-2 rounded-full px-1 min-w-[20px] h-5 flex items-center justify-center">
-                      {mentorMessages.filter(m => !m.read).length}
-                    </Badge>
+                    Messages
+                    {messages.unreadCount > 0 && (
+                      <Badge className="ml-2 rounded-full px-1 min-w-[20px] h-5 flex items-center justify-center">
+                        {messages.unreadCount}
+                      </Badge>
+                    )}
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {mentorMessages.map((message) => (
-                      <motion.div 
-                        key={message.id} 
-                        variants={itemVariants}
-                        whileHover={{ y: -2 }}
-                        className={`flex items-start gap-3 p-3 rounded-md ${!message.read ? 'bg-purple-50/50' : 'bg-white/80'}`}
-                      >
-                        {message.photo ? (
+                  {messages.recent.length === 0 ? (
+                    <EmptyState
+                      icon={MessageSquare}
+                      title="No messages yet"
+                      description="Messages from your mentees will appear here."
+                    />
+                  ) : (
+                    <div className="space-y-4">
+                      {messages.recent.map((message) => (
+                        <motion.div
+                          key={message._id}
+                          variants={itemVariants}
+                          whileHover={{ y: -2 }}
+                          className={`flex items-start gap-3 p-3 rounded-md ${!message.read ? "bg-purple-50/50" : "bg-white/80"}`}
+                        >
                           <Avatar className="h-9 w-9">
-                            <AvatarImage src={message.photo} />
-                            <AvatarFallback>{message.from.split(" ").map(n => n[0]).join("")}</AvatarFallback>
+                            <AvatarImage src={message.from?.profilePhoto} />
+                            <AvatarFallback>
+                              {(message.from?.fullName || "M")
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")
+                                .slice(0, 2)
+                                .toUpperCase()}
+                            </AvatarFallback>
                           </Avatar>
-                        ) : (
-                          <div className="h-9 w-9 flex items-center justify-center rounded-full bg-primary/10">
-                            <BellRing className="h-4 w-4 text-primary" />
+                          <div className="flex-1">
+                            <div className="flex justify-between mb-1">
+                              <p className="text-sm font-medium text-gray-800">
+                                {message.from?.fullName || "Member"}
+                              </p>
+                              <span className="text-xs text-gray-600">{timeAgo(message.createdAt)}</span>
+                            </div>
+                            <p className="text-sm text-gray-600">{message.content}</p>
                           </div>
-                        )}
-                        <div className="flex-1">
-                          <div className="flex justify-between mb-1">
-                            <p className="text-sm font-medium text-gray-800">{message.from}</p>
-                            <span className="text-xs text-gray-600">{message.time}</span>
-                          </div>
-                          <p className="text-sm text-gray-600">
-                            {message.message}
-                          </p>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                  <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
-                    <Button variant="outline" className="w-full mt-4 backdrop-blur-sm">
+                        </motion.div>
+                      ))}
+                    </div>
+                  )}
+                  <div className="mt-4 space-y-2">
+                    {messages.unreadCount > 0 && (
+                      <Button variant="outline" className="w-full backdrop-blur-sm" onClick={handleMarkAllRead}>
+                        <CheckCheck className="mr-2 h-4 w-4" />
+                        Mark all as read
+                      </Button>
+                    )}
+                    <Button
+                      variant="outline"
+                      className="w-full backdrop-blur-sm"
+                      onClick={() => router.push("/network")}
+                    >
+                      <MessageSquare className="mr-2 h-4 w-4" />
                       View All Messages
                     </Button>
-                  </motion.div>
+                  </div>
                 </CardContent>
               </Card>
             </motion.div>
 
-            {/* Calendar widget */}
+            {/* Schedule widget */}
             <motion.div variants={itemVariants}>
               <Card className="bg-white/95 backdrop-blur-md">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2 text-gray-800">
-                    <CalendarIcon className="h-5 w-5 text-primary/70" /> 
+                    <CalendarIcon className="h-5 w-5 text-primary/70" />
                     Your Schedule
                   </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {upcomingSessions.map((session) => (
-                      <motion.div 
-                        key={session.id}
-                        variants={itemVariants}
-                        whileHover={{ y: -2 }}
-                        className="flex items-start gap-3 border-b border-gray-200/30 pb-3 last:border-0"
-                      >
-                        <div className="bg-purple-100/50 text-purple-600 rounded-md p-2 flex flex-col items-center min-w-14 text-center">
-                          <span className="text-xs font-medium">{session.date.split(",")[0]}</span>
-                          <span className="text-lg font-bold">{session.date.split(" ")[1]}</span>
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-800">{session.topic}</p>
-                          <p className="text-xs text-gray-600 mb-1">with {session.menteeName}</p>
-                          <div className="flex items-center text-xs text-gray-600">
-                            <Clock className="mr-1 h-3 w-3" />
-                            {session.time}
-                          </div>
-                        </div>
-                      </motion.div>
-                    ))}
-                  </div>
-                  <motion.div whileHover={{ scale: 1.01 }} whileTap={{ scale: 0.98 }}>
-                    <Button variant="outline" className="w-full mt-4 backdrop-blur-sm">
-                      View Full Calendar
-                    </Button>
-                  </motion.div>
+                  {schedule.length === 0 ? (
+                    <EmptyState
+                      icon={Calendar}
+                      title="Nothing scheduled"
+                      description="Accepted sessions will appear on your schedule."
+                    />
+                  ) : (
+                    <div className="space-y-4">
+                      {schedule.map((session) => {
+                        const parts = dateParts(session.date);
+                        return (
+                          <motion.div
+                            key={session._id}
+                            variants={itemVariants}
+                            whileHover={{ y: -2 }}
+                            className="flex items-start gap-3 border-b border-gray-200/30 pb-3 last:border-0"
+                          >
+                            <div className="bg-purple-100/50 text-purple-600 rounded-md p-2 flex flex-col items-center min-w-14 text-center">
+                              <span className="text-xs font-medium">{parts.month}</span>
+                              <span className="text-lg font-bold">{parts.day}</span>
+                            </div>
+                            <div>
+                              <p className="text-sm font-medium text-gray-800">{session.topic}</p>
+                              <p className="text-xs text-gray-600 mb-1">with {menteeLabel(session)}</p>
+                              <div className="flex items-center text-xs text-gray-600">
+                                <Clock className="mr-1 h-3 w-3" />
+                                {session.time?.includes("-") ? session.time : formatTime(session.time)}
+                              </div>
+                            </div>
+                          </motion.div>
+                        );
+                      })}
+                    </div>
+                  )}
+                  <Button
+                    variant="outline"
+                    className="w-full mt-4 backdrop-blur-sm"
+                    onClick={() => router.push("/set-availability")}
+                  >
+                    <Settings className="mr-2 h-4 w-4" />
+                    Update Availability
+                  </Button>
                 </CardContent>
               </Card>
             </motion.div>
@@ -680,21 +726,33 @@ const MentorDashboard = () => {
                 </CardHeader>
                 <CardContent className="grid gap-2">
                   <motion.div whileHover={{ y: -2 }}>
-                    <Button variant="outline" className="justify-start backdrop-blur-sm">
-                      <Users className="mr-2 h-4 w-4" />
-                      Review Mentee Applications
+                    <Button
+                      variant="outline"
+                      className="justify-start backdrop-blur-sm w-full"
+                      onClick={() => router.push("/profile/mentor")}
+                    >
+                      <UserCircle className="mr-2 h-4 w-4" />
+                      View Public Profile
                     </Button>
                   </motion.div>
                   <motion.div whileHover={{ y: -2 }}>
-                    <Button variant="outline" className="justify-start backdrop-blur-sm">
+                    <Button
+                      variant="outline"
+                      className="justify-start backdrop-blur-sm w-full"
+                      onClick={() => router.push("/set-availability")}
+                    >
                       <Calendar className="mr-2 h-4 w-4" />
                       Update Availability
                     </Button>
                   </motion.div>
                   <motion.div whileHover={{ y: -2 }}>
-                    <Button variant="outline" className="justify-start backdrop-blur-sm">
-                      <BookOpen className="mr-2 h-4 w-4" />
-                      Add Resources
+                    <Button
+                      variant="outline"
+                      className="justify-start backdrop-blur-sm w-full"
+                      onClick={() => router.push("/forum")}
+                    >
+                      <UsersRound className="mr-2 h-4 w-4" />
+                      Community Forum
                     </Button>
                   </motion.div>
                 </CardContent>
@@ -706,7 +764,7 @@ const MentorDashboard = () => {
 
       <footer className="border-t border-gray-200/30 mt-20 bg-white/5 backdrop-blur-sm">
         <div className="container py-8 text-center text-sm text-gray-600">
-          <p>© 2023 Women in Tech Mentorship Platform. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} MentorHer — Women in Tech Mentorship Platform. All rights reserved.</p>
         </div>
       </footer>
     </div>

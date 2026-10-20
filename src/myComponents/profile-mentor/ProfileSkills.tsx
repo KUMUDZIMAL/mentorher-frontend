@@ -1,5 +1,4 @@
 "use client";
-import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -12,60 +11,19 @@ export interface SkillCategory {
 }
 
 interface ProfileSkillsProps {
+  categories?: SkillCategory[];
   isOwnProfile?: boolean;
   onEdit?: () => void;
 }
 
-const ProfileSkills = ({ isOwnProfile = false, onEdit }: ProfileSkillsProps) => {
-  const [categories, setCategories] = useState<SkillCategory[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const fetchMentorData = async () => {
-      try {
-        const res = await fetch("https://mentorher-backend.vercel.app/api/auth/mentordata",{  credentials: "include",});
-        if (!res.ok) {
-          throw new Error("Failed to fetch mentor data");
-        }
-        const json = await res.json();
-        const mentorData = json.data;
-        // Map mentor data fields to skill categories
-        const fetchedCategories: SkillCategory[] = [
-          {
-            name: "Technical Skills",
-            skills: mentorData.technicalSkills || [],
-          },
-          {
-            name: "Soft Skills",
-            skills: mentorData.softSkills || [],
-          },
-          {
-            name: "Areas of Interest",
-            skills: mentorData.areasOfInterest || [],
-          },
-        ];
-        setCategories(fetchedCategories);
-      } catch (error) {
-        console.error("Error fetching mentor data:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchMentorData();
-  }, []);
-
-  if (loading) {
-    return <div>Loading skills...</div>;
-  }
-
+const ProfileSkills = ({ categories = [], isOwnProfile = false, onEdit }: ProfileSkillsProps) => {
   return (
     <Card className="mb-6 border-2 border-accent/30 overflow-hidden">
       <CardHeader className="pb-3 bg-accent/10">
         <div className="flex justify-between items-center">
           <CardTitle className="text-xl flex items-center gap-2">
             <Sparkles className="h-5 w-5 text-primary/70" />
-            Skills & Expertise
+            Skills &amp; Expertise
           </CardTitle>
           {isOwnProfile && (
             <Button variant="ghost" size="sm" onClick={onEdit} className="h-8 p-2">
@@ -77,9 +35,7 @@ const ProfileSkills = ({ isOwnProfile = false, onEdit }: ProfileSkillsProps) => 
       </CardHeader>
       <CardContent className="p-5">
         {categories.length === 0 ? (
-          <p className="text-muted-foreground text-sm italic">
-            No skills listed yet.
-          </p>
+          <p className="text-muted-foreground text-sm italic">No skills listed yet.</p>
         ) : (
           <div className="space-y-6">
             {categories.map((category, index) => (
